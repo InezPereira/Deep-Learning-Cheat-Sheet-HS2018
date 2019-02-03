@@ -1,0 +1,87 @@
+% Lecture 3
+\subsection{Feedforward Networks}
+\label{sub:feedforwardnets}
+
+    \subsubsection{Feedforward Networks}
+    \label{ssub:feedforwardnets}
+    \textbf{Definition:} a set of computational units arranged in a DAG. If, in contrast, output of network is fed back into the computation, we have a recurrent network.
+    NN implements map $F:\R^n\xrightarrow{}\R^m$. Compositional structure (layers): $F=F^L{\circ}F^{L-1}\circ\cdots{\circ}F^1$. 
+    
+    Linear + activation function: $F^l=\sigma^l{\circ}\bar{F}^l, \> \bar{F}^l(\vx)=\vW^l\vx+\vb^l,\> l=1,\ldots,L$. 
+    
+    ``$F$ minus output layer non-linearity'': $\bar{F}=\bar{F}^L{\circ}\bar{F}^{L-1}\circ\cdots{\circ}\bar{F}^1$.
+    
+    \subsubsection{Output Units and Objectives}
+    \label{ssub:outputunitsobjectives}
+    
+    \textbf{Loss function}: is a non-negative function 
+    
+    \tab$\ell:\cY\times\cY\xrightarrow{}\R_{\geq0},\>(\vy^*,\vy)\mapsto\ell(\vy^*,\vy)$ such that 
+    
+    \tab$\ell(\vy,\vy)=0\>(\forall\vy\in\cY) \text{ and } \ell(\vy^*,\vy)>0\>(\forall\vy\neq\vy^*)$ with output space $\cY$ ($\vy^*$ is truth and $\vy$ predicted).
+    
+    \textbf{Squared-error}:
+    
+    \tab$\cY=\R^m,\>\ell(\vy^*,\vy)=\frac{1}{2}\lVert\vy^*-\vy\rVert_2^2=\frac{1}{2}\sum\limits_{i=1}^m(y_i^*-y_i)^2$
+    
+    \textbf{Classification error}:
+    
+    \tab$\cY=\lbrack1:m\rbrack,\>\ell(\vy^*,\vy)=1-\delta_{\vy^*\vy} \text{ with } \delta_{ab}=\begin{cases}1&\text{if }a=b\\0&\text{otherwise}\end{cases}$
+    
+    SVM loss: $max(0, 1-y)$ // Square loss $(1-y)^2$ // log regression: $log(1+exp(-y))$
+    
+    \textbf{Expected Risk}: The expected risk of $F$ is given by
+
+    \tab$\cR^*(F)=\vE_{\vx,\vy}\lbrack\ell(\vy,F(\vx))\rbrack$ (cannot evaluate the functional $\cR^*$ directly as the distribution governing inputs and outputs is generally unknown)
+    
+    \textbf{Training Risk}: The expected risk under the empirical distribution induced by the sample $\cS_N$. Assume we have a random sample of $N$ input-output pairs,\\$\cS_N\coloneqq\{(\vx_i,\vy_i) \mathrel{\overset{\makebox[0pt]{\mbox{\normalfont\tiny\sffamily i.i.d.}}}{\sim}}p:i=1,\ldots,N\}$.
+    
+    The training risk of $F$ on a training sample is defined as:
+    
+    \tab$\cR(F;\cS_N)=\frac{1}{N}\sum\limits_{i=1}^N\ell(\vy_i,F(\vx_i))$
+    
+    \textbf{Probability distributions as outputs}: Think of functions $F$ as mappings from inputs to distributions $\cP(\cY)$ over outputs $\vy\in\cY$.
+    
+    \tab$F:\R^n\xrightarrow{}\R^m,\>\vx\mapsto\mu,\>\mu\mathrel{\overset{\makebox[0pt]{\mbox{\normalfont\tiny\sffamily fixed}}}{\mapsto}}p(\vy;\mu)\in\cP(\cY),\>\vy{\sim}p(\vy;\mu)$
+    
+    Each $F$ effectively defines a conditional probability distribution (or conditional pdf) via $p(\vy|\vx;F)=p(\vy;\mu=F(\vx))$
+    
+    \textbf{Example: Multivariate Normal Distribution}: $\mu$ is the mean of a normal distribution (with fixed covariance $\gamma^2\vI$)
+    
+    \tab$p(\vy|\vx;F)=\lbrack\frac{1}{\sqrt{2\pi}\gamma}\rbrack^m \exp\lbrack-\frac{1}{2\gamma^2}\lVert\vy-F(\vx)\rVert^2\rbrack$
+    
+    so that: $-\log p(\vy|\vx;F)=C(\gamma) + \frac{1}{2\gamma^2}\lVert\vy-F(\vx)\rVert^2$, which is equivalent to the squared error loss. 
+    
+    \textbf{Generalized Linear Models}: predict the mean of the output distribution. Use the form:
+    \tab$\vE\lbrack\vy|\vx\rbrack=\sigma(\vw\T\vx)$, where $\sigma$ is invertible and $\sigma\inv$ is called the \emph{link function}. Can be extended to also predict variances or dispersions.
+    
+    \textbf{Example: Logistic Regression}
+    
+    $\cY=\{0,1\},\>\cP(\cY)=\lbrack0;1\rbrack,\>\sigma(x)=1/(1+e^{-x})$, then:
+    
+    \tab$\vE{\lbrack}y|\vx\rbrack=p(1|\vx)=\sigma(\vx\T\vx)=\frac{1}{1+e^{-\vw\T\vx}}$
+    
+    Link function: logit $\sigma\inv(t)=\log(\frac{t}{1-t}),\>t\in(0;1)$
+    
+    For multinomial logistic regression: $\cY=\lbrack1:m\rbrack,\>\cP(\cY)$ can be represented via soft-max
+    
+    \tab$p(y|\vx)=\frac{\exp\lbrack z_y\rbrack}{\sum_{i=1}^m\exp\lbrack z_i\rbrack},\>z_i\coloneqq\vw_i\T\vx,\>i=1,\ldots,m$
+    
+    over-parametrized model: set $\vw_1=\mathbf{0}, \text{s.t.} z_1=0$ (w.l.o.g.). Generalizes (binary) logistic regression (see exercises).
+    
+    In neural networks: \emph{non-linear} functions replace linear functions. Output layer units implement \emph{inverse link function}.
+    
+    Normal model (linear output layer):
+    
+    \tab$\vE\lbrack\vy|\vx\rbrack=\bar{F}(\vx)=\vW^L(\bar{F}^{L-1}\circ\cdots{\circ}\bar{F}^1)(\vx)+\vb^L$
+    
+    Logistic regression (sigmoid output layer):
+    
+    \tab$\vE\lbrack y|\vx\rbrack=\sigma(\bar{F}(\vx))$
+    
+    \textbf{Logistic Log-Likelihood}: Using shorthand $z\coloneqq\bar{F}(\vx)\in\R$ then
+    
+    \tab$-\log p(y|z)=-\log\sigma((2y-1)z)=\zeta((1-2y)z, \text{ where } \zeta=\log(1+\exp(\cdot))$
+    
+    $\zeta$ is the \emph{soft-plus}/\emph{cross entropy loss} function.
+ 

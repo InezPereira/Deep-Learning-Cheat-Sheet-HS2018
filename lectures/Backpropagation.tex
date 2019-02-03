@@ -1,0 +1,69 @@
+% Lecture 4
+\subsection{Backpropagation}
+\label{sub:backpropagation}
+    Gradient of objective with regard to parameters $\theta$: $\nabla_\theta\cR=(\frac{\partial\cR}{\partial\theta_1},\ldots,\frac{\partial\cR}{\partial\theta_d})\T$
+    
+    Steepest descent and \emph{stochastic gradient descent}: $\theta(t+1)\xleftarrow{}\theta(t)-\eta\nabla_\theta\cR(\cS)$
+    
+    With $t=0,1,2,\ldots$ is iteration index. $\cS=$ all training data $\Rightarrow$ steepest descent; $\cS=$ mini batch of data $\Rightarrow$ SGD
+    
+    Basic steps for backprop: 1) forward pass for given training input $\vx$ to compute activations for all units. 2) compute gradient of $\cR$ w.r.t. output layer activations for given target $vy$. 3) iteratively propagate activation gradient information from outputs to inputs. 4) compute local gradients of activations w.r.t. weights.
+    
+    Use chain rule: $(f\circ g)'=(f'\circ g)\cdot g'$. 
+    
+    Equivalently: $\frac{d(f\circ g)}{dx}\bigr|_{x=x_0}=\frac{df}{dz}\bigr|_{z=g(x_0)}\cdot\frac{dg}{dx}\bigr|_{x=x_0}$
+    
+    \textbf{Jacobi Matrix}: vector valued function (map) $F:\R^n\xrightarrow{}\R^m$. Each component function has gradient $\nabla F_i\in\R^n,\>i\in\lbrack1:m\rbrack$. Collect all gradients (as rows) into \emph{Jacobi matrix} $(\vJ_F)_{ij}=\partial F_i/\partial x_j$:
+    
+    \tab$\vJ_F\coloneqq
+    \begin{bmatrix}
+    \nabla\T F_1 \\
+    \nabla\T F_2 \\
+    \vdots \\
+    \nabla\T F_m
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+    \frac{\partial F_1}{\partial x_1} & \frac{\partial F_1}{\partial x_2}  & \dots  & \frac{\partial F_1}{\partial x_n} \\
+    \frac{\partial F_2}{\partial x_1} & \frac{\partial F_2}{\partial x_2}  & \dots  & \frac{\partial F_2}{\partial x_n} \\
+    \vdots & \vdots  & \ddots & \vdots \\
+    \frac{\partial F_m}{\partial x_1} & \frac{\partial F_m}{\partial x_2}  & \dots  & \frac{\partial F_m}{\partial x_n}
+    \end{bmatrix}
+    \in\R^{m\times n}
+    $
+    
+    \textbf{Jacobi Matrix Chain Rule}: With vector-valued functions $G:\R^n\xrightarrow{}\R^q,H:\R^q\xrightarrow{}\R^m,F\coloneqq H\circ G$:
+    
+    \tab$\vJ_{H \circ G}\bigr|_{\vx=\vx_0}=\vJ_{H}\bigr|_{\vz=G(\vx_0)}\cdot\vJ_{G}\bigr|_{\vx=\vx_0}$
+    
+    \textbf{Deep function compositions}: Notation $\xrightarrow{}$ index of a layer: \underline{superscript}; index of a dimension of a vector: \underline{subscript}; shorthand for layer activations $\vx^l\coloneqq(F^l\circ\cdots\circ F^1)(\vx)\in\R^{m_l}$ and $x_i^l\in\R$: activation of $i$-th unit in layer $l$; index of a data point, rectangular brackets $(\vx\lbrack i \rbrack,\vy\lbrack i \rbrack)$.
+    
+    Composition of multiple maps with a final cost function:
+    
+    \tab$F=F^L\circ\cdots\circ F^1:\R^n\xrightarrow{}\R^m$
+    
+    \tab$\vx=\vx^0\overset{F^1}{\mapsto}\vx^1\overset{F^2}{\mapsto}\vx^2\cdots\overset{F^L}{\mapsto}\vx^L=\vy\overset{\cR}{\mapsto}\cR(\theta;\vy)$
+    
+    \textbf{Activity Backpropagation}: Compute \emph{activity gradients} in backward order via successive multiplication with Jacobians. Backpropagation of error terms $\ve^l$. Effectively a linear network in reversed direction (w.r.t. the original) with ``activities'' $\ve^l$.
+    
+    \tab$\ve^L\coloneqq\nabla\T_\vy\cR,\> \ve^l\coloneqq\nabla\T_{\vx^l}\cR=\ve^L\cdot\vJ_{F^L}\cdots\vJ_{F^{l+1}}=\ve^{l+1}\cdot\vJ_{F^{l+1}}$
+    
+    \textbf{Jacobian for Ridge Functions}: assuming differentiability of $\sigma$
+    
+    \tab$\vx^l=F^l(\vx^{l-1}=\sigma(\vW^l\vx^{l-1}+\vb^l)$
+    
+    Hence: $\frac{\partial x_i^l}{\partial x_j^{l-1}}=\sigma'(\langle\vw^l_i,\vx^{l-1}\rangle+b^l_i)w^l_{ij}\eqqcolon\Tilde{w}^l_{ij}$
+    Thus: $\vJ_{F^l}=\Tilde{\vW}^l$
+    
+    For ReLU $\Tilde{w}^l_{ij}\in\{0,w^l_{ij}\} \Rightarrow\Tilde{\vW}^l =$ sparsified weight matrix
+    
+    \textbf{Quadratic Loss}: $-\nabla_\vy\cR(\vx,\vy^*)=-\nabla_\vy\frac{1}{2}\lVert\vy^*-\vy\rVert^2=\vy^*-\vy$
+    
+    \textbf{Multivariate Logistic Loss}:$-\frac{\partial\cR(\vx,y^*)}{\partial z_y}=\frac{\partial}{\partial z_y}\bigr\lbrack z_{y^*}-\log\sum\limits_i\exp\lbrack z_i \rbrack \bigr\rbrack=\delta_{yy^*}-\frac{\exp\lbrack z_y\rbrack}{\sum_i\exp\lbrack z_i\rbrack}=\delta_{yy^*}-p(y|\vx)$
+    
+    \textbf{Activations to Weights}: Apply chain rule one more time: locally. Each weight/bias influences exactly one unit.
+    
+    $\frac{\partial\cR}{\partial w^l_{ij}}=\frac{\partial\cR}{\partial x^l_{i}}\cdot\frac{\partial x^l_i}{\partial w^l_{ij}}=\underbrace{\frac{\partial\cR}{\partial x^l_{i}}}_{\text{backprop}}\cdot\underbrace{\sigma'(\langle\vw^l_i,\vx^{l-1}\rangle + b^l_i)}_{\text{sensitivity of } i\text{-th unit}}\cdot\underbrace{x^{l-1}_j}_{\substack{j\text{-th unit} \\ \text{activity}}}$
+    
+    
+    

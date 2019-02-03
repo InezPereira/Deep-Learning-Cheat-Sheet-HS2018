@@ -1,0 +1,117 @@
+
+% Lecture 10
+\subsection{Autoencoders}
+\label{sub:autoencoders}
+
+    \subsubsection{Autoencoders}
+    \label{ssub:autoencoders}
+    \textbf{Linear Autoencoder}: $\vx\overset{\vC}{\mapsto}\vz\overset{\vD}{\mapsto}\hat{\vx}\overset{\cR}{\mapsto}\frac{1}{2}\lVert\vx-\hat{\vx}\rVert^2$, choose $\vC,\vD$ s.t. 
+    
+    \tab$\frac{1}{2k}\sum\limits^k_{i=1}\lVert\vx_i-\vD\vC\vx_i\rVert^2\xleftarrow{}\min$
+    
+    \textbf{Optimal Linear Compression}: 
+    
+    \tab Proposition: Given data $\vX=\vU\cdot\diag(\sigma_1,\ldots,\sigma_n)\cdot \vV\T$. The choice $\vC=\vU_m\T$ and $\vD=\vU_m$ minimizes the squared reconstruction error of a two-layer linear auto-encoder with $m$ hidden units.
+    
+    \tab Proof: 
+    
+    \tab $\vD\vC\vX=\underbrace{\vU_m}_\text{1st} \underbrace{\vU_m\T}_\text{2nd}\underbrace{\vU\vSi\vV\T}_\text{data}=\vU_m\lbrack\vI_m\>\>\> \mathbf{0} \rbrack \vSi \vV\T=\vU_m\lbrack \vSi_m\>\>\> \mathbf{0}\rbrack\vV\T$\\
+    \tab $\phantom{\vD\vC\vX}=\vU_m\vSi_m\vV_m\T$
+    
+    \textbf{Principal Component Analysis}: Assume we have centered the data
+    
+    \tab $\vx_i\mapsto\vx_i-\frac{1}{k}\sum^k_{i=1}\vx_i$
+    
+    $\Rightarrow \vS\coloneqq\vX\vX\T\in\R^{n\times n}$ is the sample covariance matrix
+    
+    $\Rightarrow\vS=\vU\vSi\vV\T\vV\vSi\vU\T=\vU\vSi^2\vU\T$
+    
+    $\Rightarrow$ columns of $\vU$ are eigenvectors of covariance matrix.
+    
+    $\Rightarrow\vU_m\vU_m\T$ is projection to $m$ principcal components of $\vS$
+    
+    \tab This is equivalent to PCA.
+    
+    \textbf{Regularized Autoencoder}: Can use L2 norm (ability to learn ``overcomplete'' codes), L1 norm (code sparseness), or contractive autoencoders ($\Omega(\vz)=\lambda\lVert \pdv{\vz}{\vx} \rVert^2_F$ penalizes Jacobian and generalizes weight decay)
+    
+    \textbf{Denoising Autoencoder}: Perturb inputs $\vx\mapsto\vx_\eta$, where $\vet$ is a random noise vector (e.g. additive (white) noise)
+    
+    \tab $\vx_\eta=\vx+\vet,\>\>\vet\sim\cN(\mathbf{0},\sigma^2,\vI)$, $\min\xrightarrow{}\E_{\vx}\E_{\vet} \lbrack\ell(\vx,(H\circ G)(\vx_\vet)) \rbrack$
+    
+    \tab Hope: $\lVert\vx-\vx_{\vet} \rVert^2 > \lVert\vx - H(G(\vx_{\vet}))\rVert^2 \Rightarrow$ de-noising
+    
+    
+    
+    \subsubsection{Factor Analysis}
+    \label{ssub:factoranalysis}
+    
+    \textbf{Latent Variable Models}: Generic way of definite probabilistic i.e. generative models:
+    
+    \tab 1) Latent variable $\vz$, with distribution $p(\vz)$
+    
+    \tab 2) Conditional models for observables $\vx$, $p(\vx|\vz)$
+    
+    \tab 3) Observed data model: integrating/summing out latent variables:
+    
+    \tab $p(\vx)=\int p(\vz)p(\vx|\vz)\mu(d\vz) = \begin{cases} \mu = \text{ Lebesgue, } & \int p(\vz)p(\vx|\vz)d\vz \\ \mu=\text{ counting, } & \sum_\vz p(\vz)p(\vx|\vz) \end{cases}$
+    
+    Simple discrete model: mixture model
+    
+    \tab $\vz\in \{1,\ldots,K\},\> p(\vz)=$ mixing proportions.
+    
+    \tab $p(\vx|\vz)$: conditional densities (e.g. Gaussians)
+    
+    \textbf{Linear Factor Analysis}: 
+    \tab Latent variable \emph{prior} $\vz\in\R^m$, $\vz\sim\cN(\mathbf{0},\vI)$\\
+    Linear \emph{observation model}, $\vx\in\R^n$ \\
+    \tab$\vx=\vmu+\vW\vz+\vet,\>\vet\sim\cN(\mathbf{0},\vSi),\>\vSi\coloneqq\diag(\sigma^2_1,\ldots,\sigma^2_n)$
+    
+    \tab $\vet$ and $\vz$ are independent, typically: $m<n$ (fewer factors than features), few factors account for dependencies between many observables, MLE for $\mu$ on training set: $\hat{\vmu}=\frac{1}{k}\sum^k_{i=1}\vx_i$ (can assume data is centered)
+    
+    \textbf{Moment Generating Functions}: \emph{Moment generating function} of random vector $\vx$:
+    
+    \tab $M_x:\R^n\xrightarrow{}\R,\> M_\vx(\vt)\coloneqq\E_{\vx}\exp \lbrack \vt\T \vx \rbrack \>\>\>\>(= \int^\infty_{-\infty}\vt\T \bar{\vx} \cdot f(\bar{\vx}) \> d\bar{\vx})$
+    
+    \emph{Uniqueness theorem}: If $M_\vx,\>M_\vy$ exist for RVs $\vx,\vy$ and $M_\vx=M_\vy$ then (essentially) $p(\vx)=p(\vy)$.
+    
+    $M_\vx$ represents \emph{moments} of $\vx$ in the following way: $k_1,\ldots,k_n\in\mathbb{N}$,
+    
+    \tab $\E \lbrack x^{k_1} \cdots x^{k_n} \rbrack=\frac{\partial^k}{\partial t^{k_1}_1\cdots \partial t^{k_n}_n}M_\vx \bigr|_{\vt=0}$
+    
+    Moment generating functions can be used to deal with \emph{sums of i.i.d. random variables}: $M_{\vx+\vy}=M_\vx \cdot M_\vy$
+    
+    % \textbf{Maximum Likelihood Estimation}
+    
+    \subsubsection{Deep Gaussian Models}
+    \label{ssub:deepgaussianmodels}
+    
+    Generalize factor analysis with \emph{depth}. 
+    
+    Noise variables: $\vz^l \overset{\text{iid}}{\sim} \cN(\mathbf{0},\vI),\>l=1,\ldots,L$
+    
+    Hidden activities (top-down $\vh^L\xrightarrow{}\vh^1$:
+    
+    \tab $\vh^L=\vW^L\vz^L,\>\> \vh^l=\underbrace{F^l(\vh^{l+1})}_\text{deterministic}+\underbrace{\vW^l\vz^l}_\text{stochastic}$
+    
+    Hidden layer (conditional) distribution [vs factor analysis] \\
+    \tab $\vh|\vh^+\sim\cN\bigr(F(\vh^+),\vW\vW\T  \bigr)\>\>\lbrack\text{ vs. } \vx|\vz\sim\cN(\vmu,\vW\vW\T+\vSi)  \rbrack$
+    
+    \textbf{Generative Model Estimation}: We have assume for a given $\vx$ that $q(\vz|\vx)$ is fixed (part of ELBO). How can we optimize $\theta$?
+    
+    Sample noise variables $(\vz^1,\ldots,\vz^L)\sim q(\vz|\vx)$. Perform backpropagation and SGD step for $\theta$.
+    
+    \tab If $q$ is simple, sampling is efficient (no MCMC needed). Unbiased estimation of gradient, small variance overhead. Mayb even be beneficial (training with noise).
+    
+    \textbf{Stochastic Backpropagation}: Optimizing over $q$ involves gradients of expectations. How does a change of the $q$-distributions change $q$-averages?
+    
+    \tab $\vz\sim \cN(\vmu,\vSi),\> f:$ smooth and integrable, then\\
+    \tab $\nabla_{\vmu} \E \lbrack f(\vz) \rbrack = \E \lbrack \nabla_\vz f(\vz) \rbrack$, $\nabla_{\vSi} \E \lbrack f(\vz) \rbrack=\frac{1}{2} \E \lbrack \nabla^2_{\vz} f(\vz) \rbrack$
+    
+    via integration by parts:
+    
+    \tab $\nabla_{\vmu} \E f(\vz) = - \int \nabla_{\vz} \cN (\vmu,\vSi)f(\vz)d\vz=\int\cN(\vmu,\vSi)\nabla_{\vz}f(\vz)d\vz$
+    
+    \tab (used: $\int f(\vz)\nabla_{\vmu}p(\vz)d\vz   \overset{\text{Gaussian}}{=}-\int f(\vz) \nabla_{\vz}p(\vz)d\vz) $\\
+    \tab $\phantom{\text{(used: } f(\vz)\nabla_{\vmu}p(\vz)d\vz}= \int \nabla_{\vz}f(\vz) p(\vz)d\vz) - \underbrace{\lbrack f\cdot p \rbrack^\infty_{-\infty}}_{=0\text{ ``sloppy''}} = \E \lbrack \nabla_{\vz} f(\vz)\rbrack$
+    
+    \textbf{Deep Latent Gaussian Models}: Two coupled networks: top-down (generative) and bottom-up (recognition). Forward pass: deterministic recognition, sampled generative. Backward pass: deterministic, but: stochastic backpropagation.

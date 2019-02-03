@@ -1,0 +1,95 @@
+% Thanks to Samuel Charreyron and his Data Mining cheat sheet for the layout! :)
+
+\documentclass[7pt,parskip]{scrartcl}
+\usepackage{calc}
+\usepackage[landscape,paper=a4paper,left=3mm, right=3mm,top=0mm, bottom = 3mm,includehead,headheight=5mm,headsep=2mm]{geometry}
+\usepackage{multicol}
+\usepackage[alwaysadjust]{paralist}
+% \usepackage[tight]{savetrees}
+\usepackage[ngerman]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{multirow}
+
+\renewcommand\familydefault{\rmdefault}
+\usepackage[]{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{empheq}
+\usepackage{color}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{mdframed}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage{physics}
+\usepackage{hyperref}
+\usepackage[dvipsnames]{xcolor} 
+
+\graphicspath{/}
+
+ %PLATZSPAAREN SPACING 
+\setlength{\parskip}{0pt}
+\setlength{\parsep}{0pt}
+
+\usepackage{mathrsfs}
+
+\usepackage[]{titlesec} % SPACING überall definieren
+\titlespacing*{\section}{0pt}{0pt}{5pt} %indent,space befor, space after
+\titlespacing*{\subsection}{0pt}{0.2cm}{0pt}
+\titlespacing*{\subsubsection}{0pt}{0.15cm}{0pt}
+\titleformat*{\section}{\fontencoding{OT1}\fontfamily{cmr} \fontseries{bx}\fontshape{sc} \fontsize{15pt}{15pt} \selectfont\color{Maroon}} %italic
+\titleformat*{\subsection}{\fontencoding{OT1}\fontfamily{cmr} \fontseries{bx}\fontshape{sc} \fontsize{10pt}{10pt} \selectfont\color{OliveGreen}} %italic
+\titleformat*{\subsubsection}{\fontencoding{OT1}\fontfamily{cmr} \fontseries{bx}\fontshape{sc} \fontsize{9pt}{9pt} \selectfont\color{NavyBlue}} %italic
+\def\thesection{}
+\def\thesubsection{\arabic{subsection}}
+
+\definecolor{myblue}{cmyk}{1,.72,0,.38}
+\everymath\expandafter{\the\everymath \color{myblue}}
+\everydisplay\expandafter{\the\everydisplay \color{myblue}}
+
+
+\include{macros} %Macros reinladen
+\include{def}
+
+%\setlength\headsep{9pt}
+\setlength\columnseprule{0.5pt}
+
+%\setlength{\abovedisplayskip}{0pt}
+%\setlength{\abovedisplayshortskip}{2pt}
+%\setlength{\belowdisplayskip}{5pt}
+%\setlength{\belowdisplayshortskip}{2pt}
+
+%Header
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\rhead{Ines Pereira}
+\lhead{Page \thepage}
+\chead{Deep Learning - Cheat Sheet}
+
+%++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+\newcommand{\E}{\textrm{E}}
+\newcommand{\V}{\textrm{Var}}
+\newcommand*{\horzbar}{\rule[.5ex]{2.5ex}{0.5pt}}
+
+\begin{document}
+\begin{multicols*}{3}
+
+\section*{Lectures}
+
+\input{lectures/Intro.tex} % Introductory thoughts
+\input{lectures/CompModels.tex} % Lecture 01
+\input{lectures/AppTheoryEtc.tex} % Lecture 02
+\input{lectures/FeedforwardNetworkss.tex} % Lecture 03
+\input{lectures/Backpropagation.tex} % Lecture 04
+\input{lectures/CNN.tex} % Lecture 05
+\input{lectures/Optimization.tex} % Lectures 06-07
+\input{lectures/NLP.tex} % Lecture 08
+\input{lectures/MemoryAttention.tex} % Lecture 09
+\input{lectures/Autoencoders.tex} % Lecture 10
+\input{lectures/GenerativeModels.tex} % Lecture 11
+\input{Notes.tex} % Miscellaneous
+
+
+\end{multicols*}
+\end{document}

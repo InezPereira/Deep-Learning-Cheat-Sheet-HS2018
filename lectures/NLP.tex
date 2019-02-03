@@ -1,0 +1,43 @@
+
+% Lecture 8
+\subsection{NLP}
+\label{sub:nlp}
+    \textbf{Word embeddings}: Map symbols over vocabulary $\cV$ to vector representation $\xrightarrow{}$ embedding into a (Euclidean) vector space. Symbolic $\cV\ni w \overset{\text{embed}}{\mapsto}\vx_w\in\R^d$ quantitative. ($w_i\mapsto\vx_i\in\R^D$)
+    
+    \textbf{Skip-gram}: Pairwise occurrences of words in context window of size $R$. Text is a long sequence of words, $\vw=(w_1,\ldots,w_T)$. Co-occurrence index set: $\cC_R\coloneqq\{(i,j)\in \lbrack 1:T\rbrack^2:1\leq\lvert i-j\rvert\leq R\}$. Skip-gram objective function: $\cL(\theta;\vw)=\sum\limits_{(i,j)\in\cC_R}\log\lbrack\frac{p_\theta (w_i|w_j)}{p(w_i)}\rbrack$. Model (soft-max): 
+    
+    \tab$\log p_\theta(v|w)=\vx_v\T\vz_w-\log\underbrace{\sum_{u\in\cV}\exp\lbrack\vx_u\T\vz_w\rbrack}_\text{partition function}$
+    
+    In practice it's impractical to calculate the partition function. Use negative sampling and re-formulate as log regression instead, $p_n(w)=p(w)^\alpha$:
+    
+    \tab$\cL(\theta;\vw)=\sum\limits_{(i,j)\in\cC_\R}\bigr\lbrack\underbrace{\log\sigma(\vx_{w_i}\T\vz_{w_j})}_\text{positive examples}+k\vE_{v\sim p_n}\underbrace{\lbrack\log\sigma(-\vx_{w_i}\T\vz_v)\rbrack}_\text{negative examples}\bigr\rbrack$
+    
+    \textbf{From words to sequences of words}: language models via embeddings
+    
+    \tab$\log p(v|\vw\coloneqq w_1,\ldots,w_{t-1}=\vx_v\T\vz_\vw+\text{ const}$, w/ $\vx_v$ word embedding, $\vz_\vw$ sequence embedding.
+    
+    %useful link for skip-gram: http://mccormickml.com/2016/04/19/word2vec-tutorial-the-skip-gram-model/
+    \subsubsection{Conv. Nets for Natural Language}
+    \label{ssub:convnetsfornl}
+    
+    skipping
+    
+    \subsubsection{Recurrent Networks}
+    \label{ssub:recurrentnets}
+    
+    \textbf{Linear dynamical system}: $\bar{F}(\vh,\vx;\theta)\coloneqq\vW h+\vU x + \vb,\>\theta=(\vU,\vW,\vb,\ldots)$
+    
+    compose with element-wise non-linearity:\\ \tab$F\coloneqq\sigma\circ\bar{F},\>\sigma\in\{\text{logistic, tanh, ReLU,\ldots}\}$
+    
+    Optionally produce outputs: $\vy=H(\vh;\theta)\coloneqq\sigma(\vV\vh+\vc),\>\theta=(\ldots,\vV,\vc)$
+    
+    Loss functions: output at end $(t=T)$: $\vh^T\mapsto H(\vh^T;\theta)=\vy$
+    
+    output at every time step: seq $(\vy^1,\ldots,\vy^T)$:\\ \tab$\cR(\vy^1,\ldots,\vy^T)=\sum\limits^T_{t=1}\cR(\vy^t)=\sum\limits^T_{t=1}\cR(H(\vh^t;\theta))$
+    
+    \textbf{Backprop through time (BPTT)}: Unroll network, define shortcut\\ \tab$\dot{\sigma}\coloneqq\sigma'(\bar{F}_i(h^{t-1},x^t))$, then\\
+    
+    \tab$\frac{\partial\cR}{\partial w_{ij}}=\sum\limits_{t=1}^{T}\frac{\partial \cR}{\partial h^t_i}\cdot\frac{\partial h^{t}_{i}}{\partial w_{ij}}=\sum\limits_{t=1}^{T}\frac{\partial\cR}{\partial h^t_i}\cdot\dot{\sigma}^t_i\cdot h^{t-1}_{j}$\\
+    \tab$\frac{\partial\cR}{\partial u_{ik}}=\sum\limits_{t=1}^{T}\frac{\partial \cR}{\partial h^t_i}\cdot\frac{\partial h^{t}_{i}}{\partial u_{ik}}=\sum\limits_{t=1}^{T}\frac{\partial\cR}{\partial h^t_i}\cdot\dot{\sigma}^t_i\cdot x^{t}_{k}$ (notice weight sharing)
+    
+    \textbf{Exploding/Vanishing gradients}: Add slides 32-33 here

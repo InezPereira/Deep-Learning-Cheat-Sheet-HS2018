@@ -1,0 +1,95 @@
+% Lecture 2
+\subsection{Approx. Theory, Rectification, Sigmoid Nets} % (fold)
+\label{sub:approxtheory}
+
+    \subsubsection{Ridge Functions} % (fold)
+    \label{ssub:ridgefunctions}
+        \textbf{Definition}: $f:\R^n\xrightarrow{}\R$ is a ridge function, if it can be written as $f(\vx)=\sigma(\vw\T\vx+b)$ for some choice of $\sigma:\R\xrightarrow{}\R, \vw\in\R^n, b\in\R$.
+        
+        Denote the linear part of $f$ by $\bar{f}(\vx)=\vw\T\vx+b$, then
+        
+        \tab$L_f(c)=\bigcup\limits_{d\in\sigma\inv(c)}L_{\bar{f}}(d)$
+        
+        if $\sigma$ is differentiable at $z=\vw\T\vx+b$, then 
+        
+        $\nabla_\vx f \>\>\>\>\>\>\> \mathrel{\overset{\makebox[0pt]{\mbox{\normalfont\tiny\sffamily chain rule}}}{=}}\>\>\>\>\>\>\> \sigma'(x)\nabla_\vx\bar{f} \>\>\>\>\> \mathrel{\overset{\makebox[0pt]{\mbox{\normalfont\tiny\sffamily directly}}}{=}}\>\>\>\>\> \sigma'(x)\vw$
+        
+        \textbf{Theorem:} Let $f:\R^n\xrightarrow{}\R$ be differentiable at $\vx$. Then either $\nabla f(\vx)=0$ or $\nabla f(\vx) \perp L_f(f(\vx))$.
+        
+        \textbf{Pancake metaphor}: Each pancake slice $\xrightarrow{}$ same value function, same level set. The pancakes correspond to $w_i$, stacked to create $\vw$.
+        
+        \textbf{Advantages of ridge functions}: choice of \emph{direction of change} is done in linear part $\Rightarrow$ essentially equivalent to linear case. Non-linear activation function ($\sigma$): models the \emph{rate of change} in the chosen direction. Just a $C(\R)$ function, dimension independent. Continuous activation functions can be approximated by expansions with fixed activation function. Simplification at the cost of increased layer width. Therefore: continuous functions can be well-approximated by linear combinations of ridge functions (UAT).
+        
+        \textbf{Dense Approximations:} A function class $H\subseteq C(\R^d)$ is dense in $C(\R^d)$ iff:
+        $\forall f \in C(\R^d), \forall\epsilon>0, \forall K \subset\R^d$, compact: 
+        
+        $\exists h \in H$ s.t. $\underset{x\in K}{max}|f(\vx)-h(\vx)|=||f-h||_{\infty, K}<\epsilon$
+        
+        Informally speaking: we can approximate any continuous $f$ to arbitrary accuracy (on $K$) with a suitable member of $H$.
+        
+        \textbf{Approximation theorem:} Let $\sigma\in C^{\infty}(\R)$, not a polynomial, then $\cH^1_{\sigma}$ is dense in $C(\R)$.\\
+        \textbf{Corollary:} MLPs with one hidden layer and any non-polynomial, smooth activation function are universal function approximators.\\
+        \textbf{Lemma:} MLPs with one hidden layer and a polynomial activation function are \textbf{not} universal function approximators.\\
+        \textbf{Remark:} Smoothness requirement can be substantially weakened.
+        
+    \subsubsection{Rectification Networks}
+    \label{ssub:rectificationnetworks}
+        \textbf{Rectified Linear Units}: Activation function of ReLU is defined as
+        
+        \tab$(x)_+\coloneqq\max(0,x),\>\> \underbrace{\partial(x)_+}_{\text{subdifferential}}=\begin{cases}\{1\} & \text{if } x > 0\\\{0\}&\text{if }x<0\\\lbrack0;1\rbrack&\text{if }x=0\\
+        \end{cases}$
+        
+        \textbf{Absolute Value Rectification}: Definition
+        
+        \tab${\lvert}x\rvert\coloneqq\begin{cases}x&\text{if }x\geq0\\-x&\text{otherwise}\end{cases},\>\> \partial{\lvert}x\rvert=\begin{cases}1 & \text{if } x > 0\\\lbrack-1;1\rbrack&\text{if }x=0\\-1&\text{if }x<0\\
+        \end{cases}$
+        
+        Relation to ReLU activation: $(x)_+=\frac{x+{\lvert}x\rvert}{2}$ and ${\lvert}x\rvert=2(x)_+-x$
+        
+        \textbf{Theorem:} Networks with one hidden layer of ReLU or absolute value units are universal function approximators.
+        
+        \textbf{Question:} by linearly combining m rectified units, into how many ($=R(m)$) cells is $\R^n$ maximally partitioned?
+        $R(m)\leq \sum_{i=0}^{min(m,n)}=\frac{m!}{(m-i)!i!}=$
+        \(
+          \begin{pmatrix}
+            m\\
+            i
+          \end{pmatrix}
+        \)
+        \textbf{Question:} process n inputs through $L$ ReLU layers with widths $m_1,...,m_L\in O(m)$. Intro how many cells can $\R^n$ be maximally partitioned. Theorem (Montufar et al. 2014): it holds asymptotically that: $R(m,L)\in\Omega\big((\frac{m}{n})^{n(L-1)} m^{n}\big)$
+        Essentially, for any fixed $n$, exponential growth can be ensured by making layers sufficiently wide $(m>m)$ and increasing the level of functional nesting (i.e. depth $L$).
+        
+        \textbf{Hinging Hyperplanes}: Hinge function definition:
+        If $g:\R^n\xrightarrow{}\R$ can be written with parameters $\vw_1,\vw_2\in\R^n$ and $b_1,b_2\in\R$ as below it is called a hinge function.
+        \tab$g(\vx)=\max(\vw_1\T\vx+b_1,\vw_2\T\vx+b_2)$
+        
+        Two hyperplanes, ``glued'' together at the face $(\vw_1-\vw_2)\T\vx+(b_1-b_2)=0$
+        
+        \textbf{$\mathbf{k}$-Hinge Functions}: \tab$g(\vx)=\max(\vw_1\T\vx+b_1,\ldots,\vw_k\T\vx+b_k)$
+        
+        \textbf{Theorem}: Every continuous PWL function from $\R^n\xrightarrow{}\R$ can be written as a signed sum of $k$-Hinges with $k\leq log_2[n+1]$. 
+        $\Rightarrow \sum_i\theta_ig_i(\vx), \theta_i\in {\pm 1}$. Reducing the growth of absolute value nesting to logarithmic growth, instead of linear. PWL functions are dense and can approximate any function to any desired degree.
+        This representation is exact (not approximate). Re-discovered by Goodfellow et al, 2013 as \emph{Maxout}.
+        
+        % \textbf{Theorem: Goodfellow, 2013} Maxout networks with 2 maxouts units are universal function approximators.
+        
+        % Interesting stuff about polyhedral functions. Skipping for now, notsure if it's relevant or if I have room.
+        
+        \textbf{Wang's Theorem (2004)}: Every continuous piecewise linear function $f$ can be written as the difference between two polyhedral functions. Explicity: there exist finite $\cA^+,\cA^-$ such that
+        
+        \tab$f(\vx)=\max\limits_{(\vw,b)\in\cA^+}\{\vw\T\vx+b\}-\max\limits_{(\vw,b)\in\cA^-}\{\vw\T\vx+b\}$
+        
+        Used by Goodfellow, 2013 to prove that a linear network with two maxout units (and a linear output unit, subtraction) are universal function approximators (exactly!). Performs well for speech recognition, beating sigmoid and ReLU in 2013. Higher improvement on smaller datasets, faster training.
+        
+    
+    \subsubsection{Sigmoid Networks}
+    \label{ssub:sigmoidnets}
+        \textbf{Sigmoid activation function} logistic function (or $\tanh$).
+        
+        \tab$\sigma(t)=\frac{1}{1+e^{-t}}=\frac{e^{t}}{1+e^{t}}\in(0;1),\>\sigma\inv(\mu)=\ln{\frac{\mu}{1-\mu}}$
+        
+        \tab$\tanh(t)=2\sigma(2t)-1\in(-1;1)$
+        
+        % \textbf{Approximation Theorem}: Lechno, Lin, Pinkus, Schocken 1993
+        
+        % Let $\sigma\in C^\infty(\R)$, not a polynomial, then $\cH_\sigma^1$ is dense in $C(\R)$. Corollary: MLPs with one hidden layer and any non-polynomial, smooth activation function are universal function approximators. Lemma: MLPs with one hidden layer and a polynomial activation function are \underline{\emph{not}} universal function approximators. Remark: Smoothness requirement can be substantially weakened, see previous results on rectified activation functions.

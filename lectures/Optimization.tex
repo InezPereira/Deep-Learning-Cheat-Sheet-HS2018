@@ -1,0 +1,92 @@
+% Lecture 6-7
+\subsection{Optimization}
+\label{sub:optimization}
+    ML uses optimization, but is not equal to optimization.
+    
+    \textbf{Gradient Descent}: Full gradient across all parameters\\
+    \tab$\theta(t+1)\xleftarrow{}\theta(t)-\eta\nabla_\theta\cR(\cS)$ with $\eta > 0$ step size/learning rate.
+    
+    Continuous time version (aka gradient flow, Euler's method): $\Dot{\theta}=-\nabla_\theta\cR$
+    
+    \subsubsection{SGD}
+    \label{ssub:sgd}
+        Choose update direction $\vv$ at random such that $\E\lbrack\vv\rbrack=-\nabla\cR$, d.h. randomization scheme is unbiased. Pick random subset $\cS_K\subseteq\cS_N, K\leq N$. Note that $\E\cR(\cS_K)=\cR(\cS_N)\Rightarrow\E\nabla\cR(\cS_K)=\nabla\cR(\cS_N)$. SGD update step (randomization at each $t$): \tab$\theta(t+1)=\theta(t)-\eta(t)\nabla\cR(t),\>\cR(t)\coloneqq\cR(\cS_K(t))$
+        
+        \textbf{Epoch}: one sweep through the data. Hard to analyze theoretically, works better in practice. No permutation of data $\Rightarrow$ danger of ``unlearning''.
+        \textbf{Mini-batch size} $k=1$ often most efficient in terms of \# backprop steps, but larger $k$ better for utilizing concurrency in GPUs or multicore CPUs.
+        
+        \textbf{Rates}: Under certain conditions SGD converges to the optimum: convex or strongly convex objective, Lipschitz gradients, decaying learning rate ($\sum^\infty_{t=1}\eta^2(t)<\infty,\>\sum^\infty_{t=1}\eta(t)=\infty$, typically $\eta(t)=C t^{-\alpha},\>\frac{1}{2}<\alpha\leq1$), iterate (Polyak) averaging. Convergence rates: $O(1/t)$ suboptimality rate for strongly-convex case, $O(1/\sqrt{t})$ for non-strongly convex case.
+        
+        \textbf{SGD with momentum}:
+        
+        \tab$\theta(t+1)=\theta(t)-\eta\nabla\cR+\alpha(\underbrace{\theta(t)-\theta(t-1))}_\text{momentum},\>\alpha\in\lbrack0;1)$
+        
+        \textbf{AdaGrad}: Intuitively, learning rate decays faster for weights that have seen significant updates. Consider the entire history of gradients, gradient matrix:
+        
+        $\theta\in\R^d,\vG\in\R^{d\times t_{max}}, g_{it}=\frac{\partial\cR(t)}{\partial\theta_i}\bigr|_{\theta=\theta(t)}$,compute (partial) row sums of $\vG$
+        
+        \tab$\gamma^2_i(t)\coloneqq\sum\limits^t_{s=1}g^2_{is}$ (note: \underline{not} gradient norms)
+        
+        \tab$\theta_i(t+1)=\theta_i(t)-\frac{\eta}{\delta+\gamma_i(t)}\nabla\cR(t),\> \delta>0$ (small)
+        
+        Non-convex variant (\textbf{RMSprop}): $\gamma_i^2\coloneqq\sum\limits_{s=1}^t\rho^{t-s}g^2_{is},\>\rho<1$
+        
+        \textbf{Newton's Method}: $\theta(t+1)=\theta(t)-\!\!\!\!\!\underbrace{(\nabla^2\cR)\inv}_\text{inverse Hessian}\!\!\!\!\!\nabla\cR\bigr|_{\theta=\theta(t)}$
+        
+        %Skipping BFGS and LBFGS
+    
+    % Lecture 6 starts
+    \subsubsection{Heuristics}
+    \label{ssub:heuristics}
+        \textbf{Polyak averaging}: average over iterates, instead of outputting the final iterate.\\
+        Linear averaging (common for convex case): $\bar{\theta}(t)=\frac{1}{t}\sum\limits_{s=1}^t\theta(s)$\\
+        Running averages (common for non-convex): $\bar{\theta}(t)=\alpha\theta(t-1)+(1-\alpha)\theta(t)$
+        
+        \textbf{Batch Normalization}: Normalize the layer activations. Fix layer $l$, fix set of examples $I\subseteq\lbrack1:N\rbrack$. Mean activity, vector of standard deviation:\\
+        
+        \tab$\mu_j^l\coloneqq\frac{1}{\lvert I\rvert}\sum\limits_{i\in I}(F^l_j\circ\cdots\circ F^1)(\vx\lbrack i\rbrack)\in\R^{m_l}$\\
+        \tab$\sigma^l_j\coloneqq\sqrt{\delta+\frac{1}{\lvert I\rvert}\sum\limits_i\Bigr((F^l_j\circ\cdots\circ F^1)(\vx\lbrack i\rbrack)-\mu_j\Bigr)^2},\>\delta>0$
+        
+        Normalized activities: $\Tilde{\vx}^l_j\coloneqq\frac{\vx^l_j-\mu_j}{\sigma_j}$,\\
+        Regain representational power: $\Tilde{\Tilde{\vx}}^l_j=\alpha_j\Tilde{\vx}^l_j+\beta_j$
+        
+        Can exactly undo the batch normalization, and directly control different learning dynamics, mean activation and scale.
+    
+    \subsubsection{Norm-Based Regularization}
+    \label{ssub:normbasedregularization}
+        \textbf{Regularization}: Any aspect of a learning algorithm that is intended to lower the \emph{generalization error} but not the training error.
+        
+        \textbf{$\mathbf{L_2}$/Frobenius-norm penalty for deep networks}:\\ \tab$\Omega(\theta)=\frac{1}{2}\sum\limits_{l=1}^L\mu^l\lVert\vW^l\rVert^2_F,\>\mu^l\geq0$ \begingroup\tiny{(common: penalize only weights, not biases)}\endgroup\\
+        
+        \textbf{Weight Decay}: Also based on $L_2$-norm
+        
+        \tab$\frac{\partial \Omega}{\partial w^l_{ij}}=\mu^l w^l_{ij},\>\>\>\theta(t+1)=\underbrace{(1-\mu)\cdot\theta(t)}_\text{weight decay}-\!\!\!\!\underbrace{\eta}_\text{step size}\!\!\cdot\!\underbrace{\nabla_\theta\cR}_\text{data dep.}$ (assume $\mu^l=\mu$)
+        
+        Weights in $l$-th layer get pulled toward zero with ``gain''. Naturally favors weights with small magnitude.
+        
+        Analysis: Quadratic (Taylor) approx. of $\cR$ around optimal $\theta^*$:
+
+        \tab$\cR(\theta)\approx\cR(\theta^*)+\frac{1}{2}(\theta-\theta^*)\T\vH(\theta-\theta^*)$, $\vH_\cR=(\frac{\partial^2\cR}{\partial\theta_i\partial\theta_j})$, \& $\vH\coloneqq\vH_\cR\bigr|_{\theta=\theta^*}$
+        
+        First order optimality condition:
+        
+        \tab$\nabla_\theta\cR_\Omega\overset{!}{=}0\Leftrightarrow\vH(\theta-\theta^*)+\mu\theta=\mathbf{0}$\\
+        \tab$\phantom{\nabla_\theta\cR_\Omega\overset{!}{=}0}\Leftrightarrow(\vH+\mu\vI)\theta=\vH\theta^*$\\
+        \tab$\phantom{\nabla_\theta\cR_\Omega\overset{!}{=}0}\Leftrightarrow\theta=(\vH+\mu\vI)\inv\vH\theta^*=\vQ\underbrace{(\vLa+\mu\vI)\inv\vLa}_{=\text{diag}(\frac{\lambda_i}{\lambda_i+\mu})}\vQ\T\theta^*$
+        
+        \tab with diagonalization $\vH=\vQ\vLa\vQ\T,\>\vLa=\text{diag}(\lambda_1,\ldots,\lambda_d)$.
+        
+        \textbf{Interpretation}: Along directions in parameter space with \underline{large} eigenvalues of $\vH$, i.e. $\lambda_i\gg\mu$: weight decay vanishes. Along directions in parameter space with \underline{small} eigenvalues of $\vH$, i.e. $\lambda_i\ll\mu$: weights decayed to nearly zero.
+        
+        %Skipping analysis of early stopping. Early stopping can be seen as an approximate L2-regularizer
+    
+    \subsubsection{Dataset Augmentation}
+    \label{ssub:datasetaugmentation}
+    
+    \subsubsection{Dropout}
+    \label{ssub:dropout}
+    \textbf{Bagging}: Ensemble method that combines models trained on bootstrap samples. 1) Bootstrap sample $\Tilde{\cS}^k_N$: sample $N$ times from $\cS_N$ \underline{with replacement} for $k=1,\ldots,K$. 2) Train model on $\Tilde{\cS}^k_N\xrightarrow{}\theta_k$. 3) Prediction: averaged model output probabilities $p(\vy|\vx)=\frac{1}{K}\sum\limits^K_{k=1}p(\vy|\vx;\theta^k)$
+    
+    \textbf{Dropout}: Randomly ``drop'' subsets of units in network. Intuitively: this selects features which depend less on other features. Define ``keep'' probability $\pi^l_i$ for unit $i$ in layer $l$. Realizes the ensemble: $p(\vy|\vx)=\sum\limits_\vZ p(\vZ)p(\vy|\vx;\vZ)$ where $\vZ$ is the binary ``zeroing'' mask, ($p(\vZ)$ is defined via $\pi^l_i$.
+    
+    

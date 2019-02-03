@@ -1,0 +1,57 @@
+% Lecture 1
+\subsection{Compositional Models}
+\label{sub:compositionalmodels}
+    \subsubsection{End-to-End Learning}
+    \label{ssub:endtoend}
+    
+    \textbf{General purpose Machine Learning Desiderata $\rightarrow$ \textit{situation in DL (aka End-to-End Learning Paradigm):}}\\
+    1. \textbf{Flexibility}: diversity of functions (few prior assumptions). $\rightarrow$ \textit{modularity, compositionally, toolbox principle}.\\
+    2. \textbf{Adaptivity}: class of parametrized functions, generic learning. $\rightarrow$ \textit{Restricted families of nonlinear functions, easy to define, good statistical efficiency, non-convex optimization}.\\
+    3. \textbf{Architecture}: modeling power vs. complexity trade-off (suitable design space/metaphors). $\rightarrow$ \textit{In DL:\\
+        - Layers of representation (width, depth, type): best practise, design patterns, informed exploration.\\
+        - Re-use of representations: multi-task, pre-training, AI etc.\\
+        - Input representation goal: less domain knowledge/feature craft, raw features (informative, but non necessarily explicit).}
+    
+    \subsubsection{Compositional Models}
+    \label{ssub:compositionalmodels}
+        Given function (implicitly):
+        $F^*: \mathbb{R}^n\xrightarrow{}\mathbb{R}^m$,
+        via noisy samples ($\mathbf{x}_i\mapsto\mathbf{y}_i$).
+        
+        Learning: approximate $F^*$ within class of functions
+        $F:\mathbb{R}^n(\times\mathbb{R}^d)\xrightarrow{}\mathbb{R}^m, \mathcal{F}\coloneqq{F(\cdot{},\theta)}$. (weights $\theta$, $d$-dimensional family, model selection: choose suitable $\mathcal{F}$, model fitting: find best $F\in\mathcal{F}$ such that $F\approx F^*$
+    
+    
+    \subsubsection{Elements of Computation}
+    \label{ssub:elementscomputation}
+    
+        \textbf{Linear function:} Simplest non-trivial functions. \emph{Weighted summing} of inputs. A function $f:\mathbb{R}^n\xrightarrow{}\mathbb{R}$ is a linear function if the following holds:
+        
+        \tab$f(\mathbf{x}+\mathbf{x'})=f(\mathbf{x})+f(\mathbf{x'}),\>(\forall\mathbf{x},\mathbf{x'}\in\mathbb{R}^n)$ and
+        $f(\alpha\mathbf{x})=\alpha f(\mathbf{x}), \>(\forall\alpha\in\mathbb{R})$
+        
+        Proposition: $f$ linear $\Leftrightarrow$ $f(\mathbf{x})=\mathbf{w}^\top \mathbf{x}$ for some $\mathbf{w}\in\mathbb{R}^n$.
+        
+        \tab$f(\mathbf{x}+\mathbf{x'})=\mathbf{w}^\top(\mathbf{x}+\mathbf{x'})=\mathbf{w}^\top\mathbf{x}+\mathbf{w}^\top\mathbf{x'}=f(\mathbf{x})+f(\mathbf{x'})$
+        
+        \tab$f(\alpha\mathbf{x})=\mathbf{w}^\top(\alpha\mathbf{x})=\alpha\mathbf{w}^\top\mathbf{x}=\alpha f(\mathbf{x})$
+        
+        
+        \textbf{Level set}: The level set of a function $f:\mathbb{R}^n\xrightarrow{}\mathbb{R}$ is a one-parametric family of sets defined as:
+        
+        \tab$L_f(c)\coloneqq\{\mathbf{x}:f(\mathbf{x})=c\}=f^{-1}(c)\subseteq\mathbb{R}^n$
+        
+        \textbf{Level set of linear functions}:
+        Let $f:\mathbb{R}^n\xrightarrow{}\mathbb{R}$ be linear, $f(\mathbf{x})=\mathbf{w}^\top\mathbf{x}+b$, then
+        
+        \tab$L_f(c)=\{\mathbf{x}:\mathbf{w}^\top\mathbf{x}=c-b\}=$ hyperplane $\bot\:\mathbf{w}$
+        
+        \textbf{Composition of linear maps}: Let $F_1,\ldots,F_L$ be linear maps, then $F=F_L\circ\cdots\circ F_1$ is also a linear map.
+        
+        % \tab$F(\vx)=(\vW_L\ldots(\vW_2(\vW_1\vx))\ldots)=\underbrace{(\vW_L\ldots\vW_2\vW_1)}_{\eqqcolon\vW}\vx$
+        
+        Shows that every $L$-level hierarchy collapses to one level. $\Rightarrow$ Need to move beyond linearity.
+        
+        \textbf{``Modest'' generalization of linear maps?}: Keep level set structure of linear function. \emph{Rectified units} $\xrightarrow{}$ piecewise linear functions, map is linear on each piece (polyhedra), continuous but typically non-differentiable (at border faces). \emph{Generalized linear units} $\xrightarrow{}$ invertible non-linearity, e.g. sigmoid functions, typically $C^\infty$ (smooth).
+        
+        
