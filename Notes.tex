@@ -1,6 +1,9 @@
-\section*{Notes}
+\section*{Tricks of the trade}
 \subsection*{Matrix Things}
-\textbf{SVD}\\
+\textbf{SVD:} Suppose $\vM$ is a $m \cross n$ matrix whose entries come from the field $K$, which is either the field of real numbers or the field of complex numbers. There exists a factorization, called a 'singular value decomposition' of $\vM$, of the form
+$ \mathbf {M} =\mathbf {U} {\boldsymbol {\Sigma }}\mathbf {V} ^{*}$
+where $\vU$ is an $m \cross m$ unitary matrix over $K$ (if $K = \mathbb {R}$ , unitary matrices are orthogonal matrices), $\boldsymbol {\Sigma }$ is a diagonal $m \cross n$ matrix with non-negative real numbers on the diagonal, $\vV$ is an $n \cross n$ unitary matrix over $K$, and $\vV^{∗}$ is the conjugate transpose of $\vV$.
+The diagonal entries σi of $\boldsymbol {\Sigma }$ are known as the singular values of $\vM$. A common convention is to list the singular values in descending order.\\
 \textbf{Diagonalization}\\
 \textbf{Matrix calculus}\\
 \tab$(\vA+\vB)'=\vA'+\vB'$, \tab$(\vA\vB\vC)'=\vA'\vB\vC+\vA\vB'\vC+\vA\vB\vC'$,\\
@@ -11,6 +14,11 @@
 
 \textbf{Matrix math}\\
 \tab$(\vA\vB)\T=\vB\T\vA\T$
+
+\textbf{Trace identities and differention rules:}\\
+$\vv^\top\vw = \sum\limits_i v_iw_i=\Tr(\vA+\vB) \quad \Tr(\vA+\vB)=\Tr(\vA)+\Tr(\vB)$\\
+$\vE\Tr(\vX)=\Tr\vE[\vX]$\\
+$ \nabla_\vA\Tr(\vA\vA^\top)=2\vA, \quad \nabla_\vA\Tr(\vA\vB)=\vB^\top$
 
 \textbf{Positive definite}:
 
@@ -64,6 +72,8 @@ Eigenvectors are orthonormal (for real, symmetric): $\vu_i\T\vu_j=\delta_{ij}$
 \textbf{Set Theory}\\
 Compact: closed and bounded\\
 $f\in\cC^{n+1}(\lbrack a,b\rbrack,\R)$: diff. $n+1$ times and is a mapping from $\lbrack a,b\rbrack$ to $\R$
+
+\textbf{Newton's Method}: $\theta(t+1)=\theta(t)-\!\!\!\!\!\underbrace{(\nabla^2\cR)\inv}_\text{inverse Hessian}\!\!\!\!\!\nabla\cR\bigr|_{\theta=\theta(t)}$
 
 \subsection*{Misc. Deep Learning}
 \subsubsection*{Loss Functions}
@@ -136,7 +146,7 @@ $\phantom{\text{Then: }\frac{\partial^2 L_n}{\partial a_k \partial a_j}}=h'(a_j)
 \subsection{Sanity checks:}
 The gradient with respect to a variable should always have the same shape as that variable.
 
-\textbf{Neat resources: http://cs231n.stanford.edu/slides/2017/}
+% \textbf{Neat resources: http://cs231n.stanford.edu/slides/2017/}
 
 \section{Sylvester's criterion}
 \href{https://en.wikipedia.org/wiki/Sylvester\%27s_criterion}{Aqui!}

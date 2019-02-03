@@ -1,6 +1,6 @@
 \subsection{Memory \& Attention}
 \label{sub:memoryandattention}
-    \textbf{LSTM with peepholes}:
+    \textbf{Long-term dependencies: LSTM with peepholes} and \textbf{GRUs}:  
     
     \includegraphics[width=4cm]{images/lstm-peepholes.png}
     \includegraphics[width=4cm]{images/gru.png}
@@ -18,12 +18,13 @@
     
     Where $\odot$ is point-wise multiplication between vectors.
     
-    \textbf{Gated memory units:}
+    \textbf{Gated memory units:}:
+
     
-    $z_t=\sigma(W_z \cdot [h_{t-1},x_t])$\\
-    $r_t=\sigma(W_r \cdot [h_{t-1},x_t])$\\
-    $\Tilde{h}_t=tanh(W \cdot [r_t * h_{t-1},x_t])$\\
-    $h_t=(1-z_t)*h_{t-1}+z_t*\Tilde{h}_t$
+    $z_t=\sigma(W_z \cdot [h_{t-1},x_t])$
+    $\quad r_t=\sigma(W_r \cdot [h_{t-1},x_t])$\\
+    $\Tilde{h}_t=tanh(W \cdot [r_t * h_{t-1},x_t])$
+    $\quad h_t=(1-z_t)*h_{t-1}+z_t*\Tilde{h}_t$
 
     
     \subsubsection{Recursive Networks}
