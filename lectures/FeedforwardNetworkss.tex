@@ -36,9 +36,11 @@
     
     \textbf{Training Risk}: The expected risk under the empirical distribution induced by the sample $\cS_N$. Assume we have a random sample of $N$ input-output pairs,\\$\cS_N\coloneqq\{(\vx_i,\vy_i) \mathrel{\overset{\makebox[0pt]{\mbox{\normalfont\tiny\sffamily i.i.d.}}}{\sim}}p:i=1,\ldots,N\}$.
     
-    The training risk of $F$ on a training sample is defined as:
+    The training risk (=empirical risk) of $F$ on a training sample is defined as:
     
     \tab$\cR(F;\cS_N)=\frac{1}{N}\sum\limits_{i=1}^N\ell(\vy_i,F(\vx_i))$
+    
+    To minimize it, you just take the argmin over F. But watch out for \textbf{consistency}! \textbf{Regularization} is one way of enforcing consistency (which also makes sure you don't overfit to the data).
     
     \textbf{Probability distributions as outputs}: Think of functions $F$ as mappings from inputs to distributions $\cP(\cY)$ over outputs $\vy\in\cY$.
     
@@ -69,11 +71,11 @@
     
     over-parametrized model: set $\vw_1=\mathbf{0}, \text{s.t.} z_1=0$ (w.l.o.g.). Generalizes (binary) logistic regression (see exercises).
     
-    In neural networks: \emph{non-linear} functions replace linear functions. Output layer units implement \emph{inverse link function}.
+    \textbf{In neural networks:} \emph{non-linear} functions replace linear functions. Output layer units implement \emph{inverse link function}.
     
     Normal model (linear output layer):
     
-    \tab$\vE\lbrack\vy|\vx\rbrack=\bar{F}(\vx)=\vW^L(\bar{F}^{L-1}\circ\cdots{\circ}\bar{F}^1)(\vx)+\vb^L$
+    \tab$\vE\lbrack\vy|\vx\rbrack=\bar{F}(\vx)=\vW^L(F^{L-1}\circ\cdots{\circ}F^1)(\vx)+\vb^L$
     
     Logistic regression (sigmoid output layer):
     
@@ -81,7 +83,22 @@
     
     \textbf{Logistic Log-Likelihood}: Using shorthand $z\coloneqq\bar{F}(\vx)\in\R$ then
     
-    \tab$-\log p(y|z)=-\log\sigma((2y-1)z)=\zeta((1-2y)z, \text{ where } \zeta=\log(1+\exp(\cdot))$
+    \tab$-\log p(y|z)=-\log\sigma((2y-1)z)=\zeta((1-2y)z,$ 
     
+    $\text{ where } \zeta=\log(1+\exp(\cdot))$
     $\zeta$ is the \emph{soft-plus}/\emph{cross entropy loss} function.
- 
+    
+    \textbf{Notes from this slide:} cross entropy is a more general term though. Soft-plus is CE when your model is a Bernouilli. In information theory, KL is referred to as the relative entropy, $E_{P_{data}}[log(P_{data}]$ is the entropy and $-E_{P_{data}}[log(P_{model}]$ is the CE.
+    
+    $KL_D(P_{data} || P_{model}) = E_{P_{data}}[log(P_{data}) - log(P_{model}))] = - E_{P_{data}}[log(P_{model})] + E_{P_{data}}[log (P_{data})]$
+    
+    \textbf{Multinomial log-likelihood:} more generally (multinomial logistic regression), use shorthand: $\vz \coloneqq\bar{F}_i(\vx)\in\R^n $ then:
+    
+    $\cR(F;(\vx,y)) = -\log p(y|\vx;F)=-\log\Big[\frac{e^{z_y}}{\sum_{i=1}^me^{z_i}}\Big]$ 
+    
+    $= -z_y + \underbrace{\log\sum\limits_{i=1}^m \exp[z_i]}_{\text{log-partition fct.}} =\log\Bigg[1+\sum\limits_{i\neq y}\exp[z_i-z_y]\Bigg]$
+    
+    \subsubsection{Regularization}
+    \textbf{Weight decay} is also known as ridge regression, logarithm of gaussian prior (MAP), maximum margin (SVM) and is related to early stopping and training with noise.
+    \textbf{Other regularization approaches:} data augmentation, noise robustness (adding it to the input/weights/labels), semisupervised learning, multitask learning, early stopping, parameter sharing, ensembles, dropout.
+    

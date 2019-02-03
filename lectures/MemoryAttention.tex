@@ -3,6 +3,8 @@
     \textbf{LSTM with peepholes}:
     
     \includegraphics[width=4cm]{images/lstm-peepholes.png}
+    \includegraphics[width=4cm]{images/gru.png}
+
     
     \tab $i_t=\sigma(W^{(i)}x_t+U^{(i)}h_{t-1})$ input gate\\
 \textbf{With peepholes:} $i_t=\sigma(W_i\cdot [C_{t-1},h_{t-1}, x_t]+b_i)$\\
@@ -17,7 +19,6 @@
     Where $\odot$ is point-wise multiplication between vectors.
     
     \textbf{Gated memory units:}
-    \includegraphics[width=4cm]{images/gru.png}
     
     $z_t=\sigma(W_z \cdot [h_{t-1},x_t])$\\
     $r_t=\sigma(W_r \cdot [h_{t-1},x_t])$\\

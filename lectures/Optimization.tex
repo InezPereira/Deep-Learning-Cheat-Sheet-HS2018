@@ -8,6 +8,8 @@
     
     Continuous time version (aka gradient flow, Euler's method): $\Dot{\theta}=-\nabla_\theta\cR$
     
+    \subsubsection{Optimization for Deep Networks}
+    
     \subsubsection{SGD}
     \label{ssub:sgd}
         Choose update direction $\vv$ at random such that $\E\lbrack\vv\rbrack=-\nabla\cR$, d.h. randomization scheme is unbiased. Pick random subset $\cS_K\subseteq\cS_N, K\leq N$. Note that $\E\cR(\cS_K)=\cR(\cS_N)\Rightarrow\E\nabla\cR(\cS_K)=\nabla\cR(\cS_N)$. SGD update step (randomization at each $t$): \tab$\theta(t+1)=\theta(t)-\eta(t)\nabla\cR(t),\>\cR(t)\coloneqq\cR(\cS_K(t))$
