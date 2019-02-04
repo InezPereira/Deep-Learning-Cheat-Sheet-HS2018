@@ -5,6 +5,10 @@
 
     \subsubsection{Autoencoders}
     \label{ssub:autoencoders}
+    Given data points $\vx\in\R^n, i=1,...,k$.
+    
+    \textbf{Goal:} compress data into $m$-dimensional ($m\leq n$) representation.
+    
     \textbf{Linear Autoencoder}: $\vx\overset{\vC}{\mapsto}\vz\overset{\vD}{\mapsto}\hat{\vx}\overset{\cR}{\mapsto}\frac{1}{2}\lVert\vx-\hat{\vx}\rVert^2$, choose $\vC,\vD$ s.t. 
     
     \tab$\frac{1}{2k}\sum\limits^k_{i=1}\lVert\vx_i-\vD\vC\vx_i\rVert^2\xleftarrow{}\min$
@@ -12,11 +16,12 @@
     \textbf{Optimal Linear Compression}: 
     
     \tab Proposition: Given data $\vX=\vU\cdot\diag(\sigma_1,\ldots,\sigma_n)\cdot \vV\T$. The choice $\vC=\vU_m\T$ and $\vD=\vU_m$ minimizes the squared reconstruction error of a two-layer linear auto-encoder with $m$ hidden units.
-    
-    \tab Proof: 
+    \textbf{Proof}: 
     
     \tab $\vD\vC\vX=\underbrace{\vU_m}_\text{1st} \underbrace{\vU_m\T}_\text{2nd}\underbrace{\vU\vSi\vV\T}_\text{data}=\vU_m\lbrack\vI_m\>\>\> \mathbf{0} \rbrack \vSi \vV\T=\vU_m\lbrack \vSi_m\>\>\> \mathbf{0}\rbrack\vV\T$\\
     \tab $\phantom{\vD\vC\vX}=\vU_m\vSi_m\vV_m\T$
+    
+    Comment: note that we can do weight sharing between the decoder and the encoder networks: $\vD=\vC^\top$
     
     \textbf{Principal Component Analysis}: Assume we have centered the data
     
@@ -34,9 +39,9 @@
     
     \textbf{Regularized Autoencoder}: Can use L2 norm (ability to learn ``overcomplete'' codes), L1 norm (code sparseness), or contractive autoencoders ($\Omega(\vz)=\lambda\lVert \pdv{\vz}{\vx} \rVert^2_F$ penalizes Jacobian and generalizes weight decay)
     
-    \textbf{Denoising Autoencoder}: Perturb inputs $\vx\mapsto\vx_\eta$, where $\vet$ is a random noise vector (e.g. additive (white) noise)
+    \textbf{Denoising Autoencoder}: Perturb inputs $\vx\mapsto\vx_\eta$, where $\vet$ is a random noise vector (e.g. additive (white) noise). \textbf{Idea}: learn robust under noise features.
     
-    \tab $\vx_\eta=\vx+\vet,\>\>\vet\sim\cN(\mathbf{0},\sigma^2,\vI)$, $\min\xrightarrow{}\E_{\vx}\E_{\vet} \lbrack\ell(\vx,(H\circ G)(\vx_\vet)) \rbrack$
+    \tab $\vx_\eta=\vx+\vet,\>\>\vet\sim\cN(\mathbf{0},\sigma^2,\vI)$, $\min\xrightarrow{}\E_{\vx}\E_{\vet} \lbrack\ell(\vx,(H\circ G)(\vx_{\vet})) \rbrack$
     
     \tab Hope: $\lVert\vx-\vx_{\vet} \rVert^2 > \lVert\vx - H(G(\vx_{\vet}))\rVert^2 \Rightarrow$ de-noising
     
@@ -45,7 +50,7 @@
     \subsubsection{Factor Analysis}
     \label{ssub:factoranalysis}
     
-    \textbf{Latent Variable Models}: Generic way of definite probabilistic i.e. generative models:
+    \textbf{Latent Variable Models}: Generic way of defining probabilistic i.e. generative models: latent variable models.
     
     \tab 1) Latent variable $\vz$, with distribution $p(\vz)$
     
@@ -68,7 +73,9 @@
     
     \tab $\vet$ and $\vz$ are independent, typically: $m<n$ (fewer factors than features), few factors account for dependencies between many observables, MLE for $\mu$ on training set: $\hat{\vmu}=\frac{1}{k}\sum^k_{i=1}\vx_i$ (can assume data is centered)
     
-    \textbf{Moment Generating Functions}: \emph{Moment generating function} of random vector $\vx$:
+    \textbf{Proposition:} in the factor analysis model $\vx \sim \cN(\vmu, \vW\vW^\top+\bf{\Sigma})$
+    
+    \textbf{Moment Generating Functions}: of random vector $\vx$:
     
     \tab $M_x:\R^n\xrightarrow{}\R,\> M_\vx(\vt)\coloneqq\E_{\vx}\exp \lbrack \vt\T \vx \rbrack \>\>\>\>(= \int^\infty_{-\infty}\vt\T \bar{\vx} \cdot f(\bar{\vx}) \> d\bar{\vx})$
     
@@ -79,6 +86,13 @@
     \tab $\E \lbrack x^{k_1} \cdots x^{k_n} \rbrack=\frac{\partial^k}{\partial t^{k_1}_1\cdots \partial t^{k_n}_n}M_\vx \bigr|_{\vt=0}$
     
     Moment generating functions can be used to deal with \emph{sums of i.i.d. random variables}: $M_{\vx+\vy}=M_\vx \cdot M_\vy$
+    
+    \textbf{Multivariate Gaussian:} $\bf{\Sigma}$ is variance-covariance matrix: $\vE(\vx-\vmu)(\vx-\vmu)^\top$
+    
+    \tab $\text{PDF}=p(\vx;\vmu,\bf{\Sigma})=\frac{\exp\big[-\frac{1}{2}(\vx-\vmu)^\top\bf{\Sigma}^{-1}(\vx-\vmu)\big]}{\sqrt{(2\pi)^n \cdot \text{det}(\bf{\Sigma})}}$
+    
+    Moment generating function:
+    $M_{\vx}(\vt)=\exp\Big[\vt^\top\vmu+\frac{1}{2}\vt^\top\bf{\Sigma}\vt\Big]$
     
     % \textbf{Maximum Likelihood Estimation}
     
@@ -96,11 +110,10 @@
     Hidden layer (conditional) distribution [vs factor analysis] \\
     \tab $\vh|\vh^+\sim\cN\bigr(F(\vh^+),\vW\vW\T  \bigr)\>\>\lbrack\text{ vs. } \vx|\vz\sim\cN(\vmu,\vW\vW\T+\vSi)  \rbrack$
     
-    \textbf{Generative Model Estimation}: We have assume for a given $\vx$ that $q(\vz|\vx)$ is fixed (part of ELBO). How can we optimize $\theta$?
+    \textbf{Generative Model Estimation}: We assume that, for a given $\vx$, $q(\vz|\vx)$ is fixed (part of ELBO). How can we optimize $\theta$?
     
     Sample noise variables $(\vz^1,\ldots,\vz^L)\sim q(\vz|\vx)$. Perform backpropagation and SGD step for $\theta$.
-    
-    \tab If $q$ is simple, sampling is efficient (no MCMC needed). Unbiased estimation of gradient, small variance overhead. Mayb even be beneficial (training with noise).
+    If $q$ is simple, sampling is efficient (no MCMC needed). Unbiased estimation of gradient, small variance overhead. Maybe even be beneficial (training with noise).
     
     \textbf{Stochastic Backpropagation}: Optimizing over $q$ involves gradients of expectations. How does a change of the $q$-distributions change $q$-averages?
     
@@ -114,4 +127,4 @@
     \tab (used: $\int f(\vz)\nabla_{\vmu}p(\vz)d\vz   \overset{\text{Gaussian}}{=}-\int f(\vz) \nabla_{\vz}p(\vz)d\vz) $\\
     \tab $\phantom{\text{(used: } f(\vz)\nabla_{\vmu}p(\vz)d\vz}= \int \nabla_{\vz}f(\vz) p(\vz)d\vz) - \underbrace{\lbrack f\cdot p \rbrack^\infty_{-\infty}}_{=0\text{ ``sloppy''}} = \E \lbrack \nabla_{\vz} f(\vz)\rbrack$
     
-    \textbf{Deep Latent Gaussian Models}: Two coupled networks: top-down (generative) and bottom-up (recognition). Forward pass: deterministic recognition, sampled generative. Backward pass: deterministic, but: stochastic backpropagation.
+    \textbf{Deep Latent Gaussian Models}: 2 coupled networks: top-down (generative) and bottom-up (recognition). Forward pass: deterministic recognition, sampled generative. Backward pass: deterministic, but: stochastic backprop.

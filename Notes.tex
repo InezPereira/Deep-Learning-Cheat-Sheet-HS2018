@@ -1,19 +1,26 @@
 \section*{Tricks of the trade}
 \subsection*{Matrix Things}
-\textbf{SVD:} Suppose $\vM$ is a $m \cross n$ matrix whose entries come from the field $K$, which is either the field of real numbers or the field of complex numbers. There exists a factorization, called a 'singular value decomposition' of $\vM$, of the form
+\textbf{SVD:} Suppose $\vM$ is a $m \cross n$ matrix whose entries are real or complex numbers. There exists a factorization, called a SVD of $\vM$, of the form
 $ \mathbf {M} =\mathbf {U} {\boldsymbol {\Sigma }}\mathbf {V} ^{*}$
-where $\vU$ is an $m \cross m$ unitary matrix over $K$ (if $K = \mathbb {R}$ , unitary matrices are orthogonal matrices), $\boldsymbol {\Sigma }$ is a diagonal $m \cross n$ matrix with non-negative real numbers on the diagonal, $\vV$ is an $n \cross n$ unitary matrix over $K$, and $\vV^{∗}$ is the conjugate transpose of $\vV$.
-The diagonal entries σi of $\boldsymbol {\Sigma }$ are known as the singular values of $\vM$. A common convention is to list the singular values in descending order.\\
-\textbf{Diagonalization}\\
+where \textbf{1)} $\vU$ is an $m \cross m$ unitary matrix over $K$ (if $K = \mathbb {R}$ , unitary matrices are orthogonal matrices), \textbf{2)} $\boldsymbol {\Sigma }$ is a diagonal $m \cross n$ matrix with non-negative real numbers on the diagonal (singular values), \textbf{3)} $\vV$ is an $n \cross n$ unitary matrix over $K$, and \textbf{4) }$\vV∗$ is the conjugate transpose of $\vV$.
+A common convention is to list the singular values in descending order.\\
+% \textbf{Diagonalization}\\
 \textbf{Matrix calculus}\\
 \tab$(\vA+\vB)'=\vA'+\vB'$, \tab$(\vA\vB\vC)'=\vA'\vB\vC+\vA\vB'\vC+\vA\vB\vC'$,\\
 \tab$(\vA^n)'=\vA'\vA^{n-1}+\vA\vA'\vA^{n-2}+\ldots+\vA^{n-1}\vA'$,\\
 \tab$(\vA\inv)'=-\vA\inv\vA'\vA\inv$, $(\det(\vA))'=\Tr(\vA'\vA)$,\\
 \tab$(\vA\vx)'=\vA\T$, $(\vx\T\vA)'=\vA$, $(\vx\T\vx)'=2\vx$, \tab$(\vx\T\vA\vx)'=\vA\vx+\vA\T\vx$
-
-
-\textbf{Matrix math}\\
-\tab$(\vA\vB)\T=\vB\T\vA\T$
+% \textbf{Matrix math}\\
+\tab$(\vA\vB)\T=\vB\T\vA\T$\\
+$\mathbf{A}^{-1} = \begin{bmatrix}
+a & b \\ c & d \\ 
+\end{bmatrix}^{-1} =
+\frac{1}{\det \mathbf{A}} \begin{bmatrix}
+\,\,\,d & \!\!-b \\ -c & \,a \\ 
+\end{bmatrix} =
+\frac{1}{ad - bc} \begin{bmatrix}
+\,\,\,d & \!\!-b \\ -c & \,a \\ 
+\end{bmatrix}$
 
 \textbf{Trace identities and differention rules:}\\
 $\vv^\top\vw = \sum\limits_i v_iw_i=\Tr(\vA+\vB) \quad \Tr(\vA+\vB)=\Tr(\vA)+\Tr(\vB)$\\
@@ -47,6 +54,9 @@ $\tan(x)\xrightarrow{}\sec^2(x),\>a^x\xrightarrow{}\ln(a)a^x,\>f/g\xrightarrow{}
 \textbf{Mean}: $\mathbb{E}\lbrack f(x) \rbrack = \int_x x\>f(x)\>dx$ \textbf{Variance:} $\mathbb{E}\lbrack f(x) \rbrack = \mathbb{E} \lbrack f(x)^2\rbrack - \mathbb{E} \lbrack f(x) \rbrack^2$
 
 \textbf{Convexity of $f$ implies}: $f(y)\geq f(x)+\nabla f(x)\T (y-x), \forall (x,y) \in \R^{d\times d}$
+
+\textbf{Jensen's inequality:} Let $(\Omega, A, \mu)$ be a probability space, such that $\mu(\Omega)= 1$. If $g$ is a real-valued function that is $\mu$-integrable, and if $\varphi$ is a convex function on the real line, then:
+$\varphi\left(\int_\Omega g\, d\mu\right) \le \int_\Omega \varphi \circ g\, d\mu.$
 
 \textbf{Cauchy-Schwarz}: $\lvert \langle \vu ,\vv \rangle\rvert^2\leq\langle \vu,\vu\rangle\cdot\langle\vv,\vv\rangle \xrightarrow{} \lvert\langle\vu,\vv\rangle\rvert\leq\lVert\vu,\vv\rVert $.
 

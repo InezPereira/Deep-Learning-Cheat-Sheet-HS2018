@@ -5,7 +5,7 @@
 \subsubsection{Density Estimation}
 \label{ssub:densityestimation}
 
-Standard problem in statistics and unsupervised learning: learn the distribution of the data. Classically: parametric familiy of densities $p(\theta),\>\>\theta\in\Theta$.
+Standard problem in statistics and unsupervised learning: learn the distribution of the data. Classically: parametric family of densities $p(\theta),\>\>\theta\in\Theta$.
 
 MLE: $\theta^* \overset{\text{max}}{\xrightarrow{}} \E \lbrack \ln p_\theta (\vx) \rbrack,\>\> \vx\sim p(\vx)$. In practice: expectation w.r.t. empirical distribution
 
@@ -14,10 +14,8 @@ MLE: $\theta^* \overset{\text{max}}{\xrightarrow{}} \E \lbrack \ln p_\theta (\vx
 Trivial for models like exponential families. Impractical for complex models (Markov nets, DNNs). What are strategies for more complex models?
 
 \textbf{Latent Variable Models}:
-
-Classicaly: Define complex models via marginalization of a latent variable model
-
-\tab $p_\theta(\vx)=\int p_\theta(\vx,\vz)d\vz$
+Classically: Define complex models via marginalization of a latent variable model
+\tab $p_\theta(\vx)=\int p_\theta(\vx,\vz)d\vz$ (or sum)
 
 EM algorithm (ELBO: evidence lower bound)
 
@@ -31,42 +29,40 @@ EM algorithm (ELBO: evidence lower bound)
 
 Can't use log-likelihood as scaling of $\bar{p}_\theta$ will cause unbounded likelihood. Alternative estimation method for unnormalized models?
 
-\textbf{Score matching}: Is there an operator we can apply to $\bar{p}_\theta$ which does not depend on normalization? Score matching
-
+\textbf{Score matching}: Is there an operator we can apply to $\bar{p}_\theta$ which does not depend on normalization? Score matching:
 \tab $\psi_\theta\coloneqq\nabla\log \bar{p}_\theta,\> \psi=\nabla \log p$
 
 Minimize criterion: $J(\theta)=\E \lVert \psi_\theta - \psi \rVert^2$
 
 Equivalently (eliminate $\psi$ using integration by parts):\\
 \tab$J(\theta) \overset{\pm c}{=} \E \lbrack \sum_i \partial_i \psi_{\theta,i}-\frac{1}{2}\psi^2_{\theta,i}\rbrack$
-
 Expectation approximated by sampling.
 
-\textbf{Implicit Models}: Statistical models via: \emph{generating stochastic mechanism} or \emph{simulation process}.
+\textbf{Implicit Models}: Statistical models via: \emph{generating stochastic mechanism} or \emph{simulation process}. \textbf{Deep implicit models:}
 
-\tab Latent code $\R^d\ni\vz\sim\pi(\vz),$ e.g. $\pit(\vz)=\cN(\mathbf{0},\vI)$\\
-\tab parameterized mechanism $F_\theta: \R^d\xrightarrow{}\R^m$\\
-\tab induced distribution $\R^m \ni \vx\sim p_\theta(\vx)$\\
-\tab sampling is easy: random vector + forward propagation
+\textbf{1) Latent code} $\R^d\ni\vz\sim\pi(\vz),$ e.g. $\pit(\vz)=\cN(\mathbf{0},\vI)$
+\textbf{2) parameterized mechanism} $F_\theta: \R^d\xrightarrow{}\R^m$
+\textbf{3) induced distribution} $\R^m \ni \vx\sim p_\theta(\vx)$
+\textbf{4) sampling} is easy: random vector + forward propagation
 
 \textbf{Noise Contrastive Estimation}: \emph{bootstrap} generative models via classification problems. Reduce density estimation to binary classification. Define probability ($p_n$: ``contrastive'' distribution: known distribution of negative samples, say ``everything but dogs'' and $p(\vx)$ is ``dogs'')
 
-\tab $\Tilde{p} (\vx,y=1)=\frac{1}{2}p(\vx),\> \Tilde{p}(\vx,y=0)\frac{1}{2}p_n(\vx)$
+\tab $\Tilde{p} (\vx,y=1)=\frac{1}{2}p(\vx),\> \Tilde{p}(\vx,y=0)=\frac{1}{2}p_n(\vx)$
 
 Probabilistic classifier (induced by $\bar{p}_\theta$)
-
-\tab $q_\theta = \frac{\alpha \bar{p}_theta}{\alpha \bar{p}_\theta + p_n},\> \alpha>0$.
+\tab $q_\theta = \frac{\alpha \bar{p}_\theta}{\alpha \bar{p}_\theta + p_n},\> \alpha>0$.
 
 Bayes optimal if $\alpha\bar{p}_\theta=p$. Minimize logistic loss with regard to $\theta$ and $\alpha>0$
 
-This estimator is consistent! It is \emph{sometimes} statistically efficient, but generally \underline{no}.
+This estimator is consistent! \emph{Sometimes} statistically efficient, generally \underline{no}.
 
+\subsubsection{Variational Auto Encoders}
 \subsubsection{Generative Adversarial Models}
 \label{ssub:gams}
 
 Classification problem: distinguish between data \& model.
 
-\tab $\Tilde{p}_\theta (\vx,y=1)=\frac{1}{2}p(\vx),\> \Tilde{p}_\theta(\vx,y=0)\frac{1}{2}p_n(\vx)$
+\tab $\Tilde{p}_\theta (\vx,y=1)=\frac{1}{2}p(\vx),\> \Tilde{p}_\theta(\vx,y=0)=\frac{1}{2}p_n(\vx)$
 
 Bayes optimal classifier: posterior $q_\theta=p/(p+p_\theta)$.
 
@@ -76,26 +72,23 @@ Train generator via minimizing the logistic likelihood:
 
 Minimize Jensen-Shannon Divergence to get $\ell^*=\text{JS}(p,p_\theta)-\ln 2$
 
-Generator's goal: generate samples that are \emph{indistinguishable from real data}, even for the best possible classifier. In general this in inaccessible, so we define a classficiation model:
-
+Generator's goal: generate samples that are \emph{indistinguishable from real data}, even for the best possible classifier. In general this in inaccessible, so we define a classfication model:
 \tab $q_\phi:\vx\mapsto\lbrack 0;1 \rbrack,\> \phi\in\Phi$.
 
 Define objective via bound: \\
-\tab$\ell^*(\theta)\geq \sup_{\phi\in\Phi}\ell(\theta,\phi),\> \ell(\theta,\phi)\coloneqq\E_{\Tilde{p}_\theta} \lbrack y\ln q_\phi(\vx) + (1-y)\ln(1-q_\phi)\vx))\rbrack$
+\tab$\ell^*(\theta)\geq \sup_{\phi\in\Phi}\ell(\theta,\phi),\>\>\>\> \ell(\theta,\phi)\coloneqq\E_{\Tilde{p}_\theta} \lbrack y\ln q_\phi(\vx) + (1-y)\ln(1-q_\phi)\vx))\rbrack$
 
 Find best classifier within restricted family. Typically: $\Phi=$ weight space of DNN. Training objective is defined implicitly over $\sup$.
 
 \textbf{Optimizing GANs}: Saddle point problem
-
-\tab $\theta^*\coloneqq \argmin_{\theta\in\Theta} \{\sup_{\phi\in\Phi} \ell(\theta,\phi)\}$. Explicitly performing inner $\sup$ is impractical. 
+$\theta^*\coloneqq \argmin_{\theta\in\Theta} \{\sup_{\phi\in\Phi} \ell(\theta,\phi)\}$. Explicitly performing inner $\sup$ is impractical. 
 
 SGD as a heuristic (may diverge!):
 
 \tab $\theta^{t+1}=\theta^t-\eta\nabla_\theta\ell(\theta^t,\phi^t)$
-
 \tab $\phi^{t+1}=\phi+\eta\nabla_\phi\ell(\theta^{t+1},\phi^t)$
 
-\textbf{Evaluating GANs}: Conceptual question: how to measure \emph{quality} of implicit models? likelihood-based method not valid for implicit models. Trade-offs: noisy samples(e.g. blurry images), but adequate representation of variability. Faithful (as in: good looking) samples, but lack of representation (``mode dropping''). Which is better?
+\textbf{Evaluating GANs}: Conceptual question: how to measure \emph{quality} of implicit models? likelihood-based method not valid for implicit models. Trade-offs: noisy samples (e.g. blurry images), but adequate representation of variability. Faithful (as in: good looking) samples, but lack of representation (``mode dropping''). Which is better?
 
 
 % \includegraphics[scale=.25]{images/f-divergences.png}
