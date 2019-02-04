@@ -1,4 +1,4 @@
-\section*{Tricks of the trade}
+% \section*{Tricks of the trade}
 \subsection*{Matrix Things}
 \textbf{SVD:} Suppose $\vM$ is a $m \cross n$ matrix whose entries are real or complex numbers. There exists a factorization, called a SVD of $\vM$, of the form
 $ \mathbf {M} =\mathbf {U} {\boldsymbol {\Sigma }}\mathbf {V} ^{*}$
@@ -22,22 +22,31 @@ a & b \\ c & d \\
 \,\,\,d & \!\!-b \\ -c & \,a \\ 
 \end{bmatrix}$
 
-\textbf{Trace identities and differention rules:}\\
-$\vv^\top\vw = \sum\limits_i v_iw_i=\Tr(\vA+\vB) \quad \Tr(\vA+\vB)=\Tr(\vA)+\Tr(\vB)$\\
-$\vE\Tr(\vX)=\Tr\vE[\vX]$\\
-$ \nabla_\vA\Tr(\vA\vA^\top)=2\vA, \quad \nabla_\vA\Tr(\vA\vB)=\vB^\top$
 
-\textbf{Positive definite}:
+  $|A| = \begin{vmatrix} a & b & c \\ d & e & f \\ g & h & i \end{vmatrix}
+    %  &= a\,\begin{vmatrix} \Box & \Box & \Box \\ \Box & e & f \\ \Box & h & i \end{vmatrix} - 
+    %     b\,\begin{vmatrix} \Box & \Box & \Box \\ d & \Box & f \\ g & \Box & i \end{vmatrix} + 
+    %     c\,\begin{vmatrix} \Box & \Box & \Box \\ d & e & \Box \\ g & h & \Box \end{vmatrix} \\[3pt]
+     &= a\,\begin{vmatrix} e & f \\ h & i \end{vmatrix} - 
+        b\,\begin{vmatrix} d & f \\ g & i \end{vmatrix} + 
+        c\,\begin{vmatrix} d & e \\ g & h \end{vmatrix}$
+    %  $&= aei + bfg + cdh - ceg - bdi - afh.$
+
+
+\textbf{Trace identities and differentiation rules:}\\
+$\vv^\top\vw = \sum\limits_i v_iw_i=\Tr(\vA+\vB) \quad \Tr(\vA+\vB)=\Tr(\vA)+\Tr(\vB)$\\
+$\vE\Tr(\vX)=\Tr\vE[\vX]$
+$\quad \nabla_\vA\Tr(\vA\vA^\top)=2\vA, \quad \nabla_\vA\Tr(\vA\vB)=\vB^\top$
+
+\textbf{Definiteness of a matrix}:
 
 \tab$\vA$ is positive definite if $\vx\T\vA\vx > 0,\>\> \forall \vx\neq0$
-
 \tab$\vA$ is indefinite if it contains positive and negative eigenvalues.
 
 \textbf{Finding Eigenvalues}:
-
-\tab $\det(\vA - \lambda \vI)=0$ and find values of $\lambda$ that make this true. To get eigenvector for $\lambda_i$, plug $\lambda_i$ into $\vA - \lambda_i \vI = \vB$ and solve $\vB\bar{\vX}=\mathbf{0}$. (Do row reduction to get one equation containing eigenvector components $x_i$, find values for each $x_i$ to make the equation true. Stack these $x_i$ to get the eigenvector for $\lambda_i$. 
-
-\tab $\det(\vA - \lambda \vI)$
+$\det(\vA - \lambda \vI)=0$ and find values of $\lambda$. To get eigenvector for $\lambda_i$, plug $\lambda_i$ into $(\vA - \lambda_i \vI)\vv = 0$ and solve.\\
+Roots of quadratic polynomial: 
+$x=\frac{-b\pm\sqrt{b^2-4ac}}{2a}$
 
 \subsection*{General Math}
 \textbf{Derivative rules}\\
@@ -47,7 +56,15 @@ $\tan(x)\xrightarrow{}\sec^2(x),\>a^x\xrightarrow{}\ln(a)a^x,\>f/g\xrightarrow{}
 
 \textbf{Sigmoid Derivative}: $\dv{\sigma(x)}{x} = \sigma(x)(1-\sigma(x))$\\
 
-\textbf{Integration by parts}: $\int u\>dv=uv - \int v\>du$
+\textbf{Hessian:} when taking it, keep in mind that the second variable w.r.t which you take the the second partial derivative is what stays fixed per row.
+
+\textbf{Integration by parts}: $\int u\>dv=uv - \int v\>du$\\
+   $\int_a^b u(x) v'(x) \, dx 
+   &= [u(x) v(x)]_a^b - \int_a^b u'(x) v(x) dx\\
+   &= u(b) v(b) - u(a) v(a) - \int_a^b u'(x) v(x) \, dx $
+
+\textbf{Integration by Substitution:}
+$\int f(g(x))g'(x) dx \rightarrow \int f(u) du$
 
 \textbf{Fundamental Theorem of Calculus}: $f(y)-f(x)=\int^y_x\nabla f(\tau) d\tau$
 
@@ -58,20 +75,25 @@ $\tan(x)\xrightarrow{}\sec^2(x),\>a^x\xrightarrow{}\ln(a)a^x,\>f/g\xrightarrow{}
 \textbf{Jensen's inequality:} Let $(\Omega, A, \mu)$ be a probability space, such that $\mu(\Omega)= 1$. If $g$ is a real-valued function that is $\mu$-integrable, and if $\varphi$ is a convex function on the real line, then:
 $\varphi\left(\int_\Omega g\, d\mu\right) \le \int_\Omega \varphi \circ g\, d\mu.$
 
-\textbf{Cauchy-Schwarz}: $\lvert \langle \vu ,\vv \rangle\rvert^2\leq\langle \vu,\vu\rangle\cdot\langle\vv,\vv\rangle \xrightarrow{} \lvert\langle\vu,\vv\rangle\rvert\leq\lVert\vu,\vv\rVert $.
+\textbf{Cauchy-Schwarz}: $\lvert \langle \vu ,\vv \rangle\rvert^2\leq\langle \vu,\vu\rangle\cdot\langle\vv,\vv\rangle$
 
-\textbf{Taylor Expansion}\\
-\tab$f(x)=\sum\limits^\infty_{n=0}\frac{f^{(n)}(x_0)}{n!}(x-x_0)^n$ with expansion around $x_0$.
+% $\xrightarrow{} \lvert\langle\vu,\vv\rangle\rvert\leq\lVert\vu,\vv\rVert $.
+
+\textbf{Taylor Expansion}
+\tab$f(x)=\sum\limits^\infty_{n=0}\frac{f^{(n)}(x_0)}{n!}(x-x_0)^n$ (exp. around $x_0$).
 
 \tab$f(\vw)\approx f(\bar{\vw})+(\vw-\bar{\vw})\T\nabla f(\bar{\vw})+\frac{1}{2}(\vw-\bar{\vw})\T H (\vw-\bar{\vw})$
 
 \textbf{Taylor-Lagrange}:
 $f(x)=\sum\limits^n_{k=0}\frac{f^{(k)}(x_0)}{k!}(x-x_0)^k+\int\limits^x_{x_0}\frac{f^{(n+1)}(t)}{n!}(x-t)^n dt$.
 
-\textbf{KL divergence}: $D_\text{KL}(P||Q)=-\sum_i P(i) \log \frac{Q(i)}{P(i)}$
+\textbf{Taylor expansion with Lagrange remainder:}\\
+$f(x)=\sum\limits^n_{k=0}\frac{f^{(k)}(x_0)}{k!}(x-x_0)^k+\frac{f^{(n+1)}(x_0+\theta(x-x_0))}{(n+1)!}(x-x_0)^{n+1}, \theta\in(0,1)$
 
-\textbf{Eigenvalues and vectors}: $H\vu_i=\lambda_i\vu_i$\\
-Eigenvectors are orthonormal (for real, symmetric): $\vu_i\T\vu_j=\delta_{ij}$
+\textbf{KL divergence}: $D_\text{KL}(P||Q)=-\sum_i P(i) \log \frac{Q(i)}{P(i)}= \sum_{x} P(x) \log\left(\frac{P(x)}{Q(x)}\right)$
+
+% \textbf{Eigenvalues and vectors}: $H\vu_i=\lambda_i\vu_i$\\
+% Eigenvectors are orthonormal (for real, symmetric): $\vu_i\T\vu_j=\delta_{ij}$
 
 \textbf{Log Likelihood:} $\log\Pi^N_n p(t_n|x_n)=\log\Pi^N_n p(t_n=1|x_n)^{t_n} p(t_n=0|x_n)^{1-t_n}=\sum^N_n t_n \log p(t_n|x_n) + (1-t_n) \log (1-p(t_n|x_n))$
 
@@ -79,11 +101,19 @@ Eigenvectors are orthonormal (for real, symmetric): $\vu_i\T\vu_j=\delta_{ij}$
 
 \textbf{Probability Names}: $P(Y|X)\xrightarrow{}$ likelihood, $P(X|Y)\xrightarrow{}$ posterior, $P(X)\xrightarrow{}$ prior, $P(Y)\xrightarrow{}$ evidence. Posterior = (likelihood * prior)/evidence
 
-\textbf{Set Theory}\\
-Compact: closed and bounded\\
+\textbf{Set Theory}
+Compact = closed and bounded\\
 $f\in\cC^{n+1}(\lbrack a,b\rbrack,\R)$: diff. $n+1$ times and is a mapping from $\lbrack a,b\rbrack$ to $\R$
 
 \textbf{Newton's Method}: $\theta(t+1)=\theta(t)-\!\!\!\!\!\underbrace{(\nabla^2\cR)\inv}_\text{inverse Hessian}\!\!\!\!\!\nabla\cR\bigr|_{\theta=\theta(t)}$
+
+\textbf{Sylvester's criterion}: necessary and sufficient criterion to determine whether a Hermitian matrix is positive-definite. All upper left corner matrices have to have a positive determinant.
+% \href{https://en.wikipedia.org/wiki/Sylvester\%27s_criterion}{Aqui!}
+
+% A differentiable function of one variable is convex on an interval if and only if the function lies above all of its tangents:
+% $f(y)\geq f(x)+\nabla f(x)^T(y-x)$
+
+\textbf{Weierstrass theorem:} If f is a given  continuous  function for $a\leq x \leq b$ and if $\epsilon$ is an arbitrary positive quantity, it is possible to construct an approximating polynomial $P(x)$ such that: $|f(x)-P(x)|\leq \epsilon, \quad a\leq x\leq b$
 
 \subsection*{Misc. Deep Learning}
 \subsubsection*{Loss Functions}
@@ -141,27 +171,16 @@ $\phantom{\text{Then: }\frac{\partial^2 L_n}{\partial a_k \partial a_j}}=h'(a_j)
 
 \tab The computational complexity for this approx. Hessian is $O(W)$ where $W$ is the total number of weights in the network, $O(W^2)$ for the full Hessian.
 
-\begin{figure}[H]
-        \includegraphics[width=\columnwidth]{images/bishop5-3.png}
+% \begin{figure}[H]
+%         \includegraphics[width=\columnwidth]{images/bishop5-3.png}
         
-        \label{fig:my_labeflf}
-    \end{figure}
+%         \label{fig:my_labeflf}
+%     \end{figure}
 
-\begin{figure}[H]
-        \includegraphics[width=\columnwidth]{images/ex11p1.png}
+% \begin{figure}[H]
+%         \includegraphics[width=\columnwidth]{images/ex11p1.png}
         
-        \label{fig:my_labelf}
-    \end{figure}
+%         \label{fig:my_labelf}
+%     \end{figure}
 
-\subsection{Sanity checks:}
-The gradient with respect to a variable should always have the same shape as that variable.
 
-% \textbf{Neat resources: http://cs231n.stanford.edu/slides/2017/}
-
-\section{Sylvester's criterion}
-\href{https://en.wikipedia.org/wiki/Sylvester\%27s_criterion}{Aqui!}
-
-A differentiable function of one variable is convex on an interval if and only if the function lies above all of its tangents:
-$f(y)\geq f(x)+\nabla f(x)^T(y-x)$
-
-\textbf{Weierstrass theorem:} If f is a given  continuous  function for $a\leq x \leq b$ and if $\epsilon$ is an arbitrary positive quantity, it is possible to construct an approximating polynomial $P(x)$ such that: $|f(x)-P(x)|\leq \epsilon, \quad a\leq x\leq b$

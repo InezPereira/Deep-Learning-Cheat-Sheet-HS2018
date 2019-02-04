@@ -11,7 +11,7 @@
     
     To generalize to higher dimensions: Replace vectors by matrices (for discrete case), tensors for 3D and higher.
     
-    \tab $(F*G)\lbrack i,j \rbrack = \sum^\infty_{k=-\infty}\sum^\infty_{l=-\infty}F\lbrack i-k, j-i \rbrack \cdot G\lbrack k,l \rbrack$
+    \tab $(F*G)\lbrack i,j \rbrack = \sum^\infty_{k=-\infty}\sum^\infty_{l=-\infty}F\lbrack i-k, j-l \rbrack \cdot G\lbrack k,l \rbrack$
     
     \textbf{Linear transform} $T$ is linear, if for all functions $f,g$ and scalars $\alpha,\beta$: 
     
@@ -39,10 +39,15 @@
     
     \textbf{Backprop in Conv Layers}: Exploit structural sparseness in computing $\frac{\partial x^l_i}{\partial x^{l-1}_j}$. Receptive field of $x^l_i:\cI^l_i\coloneqq\{j:W^l_{ij}\neq0\}$. (Where $\vW$ is the Toeplitz matrix of the convolution). Obviously $\frac{\partial x^l_i}{\partial x^{l-1}_j}=0 \text{ for } j\notin\cI^l_i$
     
-    Weight sharing in computing $\frac{\partial\cR}{\partial h^l_j}$, where $h^l_j$ is a kernel weight. \\
-    \tab$\frac{\partial\cR}{\partial h^l_j}=\sum\limits_i\frac{\partial\cR}{\partial x^l_i}\frac{\partial x^l_i}{\partial h^l_j}$.
+    Weight sharing in $\frac{\partial\cR}{\partial h^l_j}$, where $h^l_j$ is a kernel weight:
+    $\frac{\partial\cR}{\partial h^l_j}=\sum\limits_i\frac{\partial\cR}{\partial x^l_i}\frac{\partial x^l_i}{\partial h^l_j}$.
     
     Weight is re-used for every unit within target layer $\xrightarrow{}$ additive combination of derivatives in chain rule.
+    
+    $\frac{\partial L}{\partial w_{u,v}}=\sum\limits_i \sum\limits_j \frac{\partial L}{\partial y_{i,j}^{(l)}} \frac{\partial y_{i,j}^{(l)}}{\partial w_{u,v}} = \sum\limits_i \sum\limits_j \frac{\partial L}{\partial y_{i,j}^{(l)}} \frac{\partial}{\partial w_{u,v}}\big(\sum\limits_s \sum\limits_t y_{i-s,j-t}^{(l-1)}w_{s,t}\big) = \sum\limits_i \sum\limits_j \frac{\partial L}{\partial y_{i,j}^{(l)}} y_{i-u,j-v}^{(l-1)} =  \sum\limits_i \sum\limits_j \frac{\partial L}{\partial y_{i,j}^{(l)}} \text{rot}_{180} y_{u-i,v-j}^{(l-1)}$
+    
+    % \includegraphics[scale=.3]{images/BackpropCNN.png}
+    
     
     \textbf{Convolution stages:} the convolutional layer includes a convolution stage (affine transform), a detector stage (nonlinearity e.g. rectified linear) and a pooling stage (e.g. max pooling, average, soft-maximization). Only then do you move on to the next layer. \textbf{Convolutional Pyramid:} typical use of convoluton in vision: sequence of convolutions that reduce spatial dimensiosn (sub-sampling) and increase the number of channels.
     
