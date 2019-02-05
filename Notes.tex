@@ -139,37 +139,37 @@ $L=-\log\Pi^N_n p(t_n|x_n)=-\log\Pi^N_n p(t_n=1|x_n)^{t_n} p(t_n=0|x_n)^{1-t_n}=
 
 
 
-\section*{Examples}
-\subsection*{Ex4 P2: Approximate Hessian for feed-forward NN}
-\textbf{Setup}: $a_j=\sum\limits_i w_{ji}z_i$, where $z_i$ is the activation of a unit that sends a connection to unit $j$, and $w_{ji}$ is the weight associated with that connection. Let $h$ be a nonlinear activation function, then $z_i=h(a_i)$. Evaluate second derivatives of the loss, $\frac{\partial^2 L}{\partial w_{ji} \partial w_{lk}}$. Recall the loss function decomposes over samples from the dataset as $L(\cdot)=\sum_n L_n(\cdot)$
+% \section*{Examples}
+% \subsection*{Ex4 P2: Approximate Hessian for feed-forward NN}
+% \textbf{Setup}: $a_j=\sum\limits_i w_{ji}z_i$, where $z_i$ is the activation of a unit that sends a connection to unit $j$, and $w_{ji}$ is the weight associated with that connection. Let $h$ be a nonlinear activation function, then $z_i=h(a_i)$. Evaluate second derivatives of the loss, $\frac{\partial^2 L}{\partial w_{ji} \partial w_{lk}}$. Recall the loss function decomposes over samples from the dataset as $L(\cdot)=\sum_n L_n(\cdot)$
 
-\textbf{Compute $\frac{\partial L_n}{\partial w^2_{ij}}$ as a function of $z^2_i$.}\\
+% \textbf{Compute $\frac{\partial L_n}{\partial w^2_{ij}}$ as a function of $z^2_i$.}\\
 
-\tab$\frac{\partial L_n}{\partial w^2_{ij}}=\frac{\partial}{\partial w_{ji}}\cdot \frac{\partial L_n}{\partial w_{ji}}=\frac{\partial}{\partial w_{ji}}(\frac{\partial L_n}{\partial a_j}\cdot\frac{\partial a_j}{\partial w_{ji}})=\frac{\partial}{\partial w_{ji}}(\frac{\partial L_n}{\partial a_j}\cdot z_i)$\\
+% \tab$\frac{\partial L_n}{\partial w^2_{ij}}=\frac{\partial}{\partial w_{ji}}\cdot \frac{\partial L_n}{\partial w_{ji}}=\frac{\partial}{\partial w_{ji}}(\frac{\partial L_n}{\partial a_j}\cdot\frac{\partial a_j}{\partial w_{ji}})=\frac{\partial}{\partial w_{ji}}(\frac{\partial L_n}{\partial a_j}\cdot z_i)$\\
 
-\tab Used: $\pdv{a_j}{w_{ji}}=\pdv{\sum_i w_{ji}z_i}{w_{ji}}=z_i$ for one specific $i$. Apply product rule:
+% \tab Used: $\pdv{a_j}{w_{ji}}=\pdv{\sum_i w_{ji}z_i}{w_{ji}}=z_i$ for one specific $i$. Apply product rule:
 
-\tab$\pdv{}{w_{ji}} (\pdv{L_n}{a_j}\cdot z_i)=\pdv{}{w_{ji}} (\pdv{L_n}{a_j})\cdot z_i+\pdv{L_n}{a_j}\pdv{z_i}{w_{ji}}$. (and $\pdv{z_i}{w_{ji}}=0$ since output of $i$ doesn't depend on $w_{ji}$).
+% \tab$\pdv{}{w_{ji}} (\pdv{L_n}{a_j}\cdot z_i)=\pdv{}{w_{ji}} (\pdv{L_n}{a_j})\cdot z_i+\pdv{L_n}{a_j}\pdv{z_i}{w_{ji}}$. (and $\pdv{z_i}{w_{ji}}=0$ since output of $i$ doesn't depend on $w_{ji}$).
 
-\tab $\pdv{}{w_{ji}} ( \pdv{L_n}{a_j} )\cdot z_i=\pdv{}{w_{ji}} (\pdv{L_n}{w_{ji}})\cdot z_i=\pdv{}{a_j} (\pdv{L_n}{a_j}\pdv{a_j}{w_{ji}})\cdot z_i=\pdv[2]{L_n}{a_j}\cdot z_i^2$
+% \tab $\pdv{}{w_{ji}} ( \pdv{L_n}{a_j} )\cdot z_i=\pdv{}{w_{ji}} (\pdv{L_n}{w_{ji}})\cdot z_i=\pdv{}{a_j} (\pdv{L_n}{a_j}\pdv{a_j}{w_{ji}})\cdot z_i=\pdv[2]{L_n}{a_j}\cdot z_i^2$
 
-\textbf{Show that:} $\frac{\partial^2 L_n}{\partial a_j^2}=h'(a_j)^2\sum\limits_k\sum\limits_{k'} w_{kj}w_{k'j}\frac{\partial^2 L_n}{\partial a_k \partial a_{k'}}+h''(a_j)\sum\limits_k w_{kj}\frac{\partial L_n}{\partial a_k}$
+% \textbf{Show that:} $\frac{\partial^2 L_n}{\partial a_j^2}=h'(a_j)^2\sum\limits_k\sum\limits_{k'} w_{kj}w_{k'j}\frac{\partial^2 L_n}{\partial a_k \partial a_{k'}}+h''(a_j)\sum\limits_k w_{kj}\frac{\partial L_n}{\partial a_k}$
 
-\tab use (by chain rule): $\pdv{L_n}{a_j} = \sum_k \pdv{L_n}{a_k} \cdot \pdv{a_k}{a_j}$\\
-\tab For one specific $k$: $\pdv{a_k}{a_j} = \pdv{\sum_i w_{ki} z_i}{a_j} = \pdv{w_{kj} z_j}{a_j} = h'(a_j) w_{kj}$\\
+% \tab use (by chain rule): $\pdv{L_n}{a_j} = \sum_k \pdv{L_n}{a_k} \cdot \pdv{a_k}{a_j}$\\
+% \tab For one specific $k$: $\pdv{a_k}{a_j} = \pdv{\sum_i w_{ki} z_i}{a_j} = \pdv{w_{kj} z_j}{a_j} = h'(a_j) w_{kj}$\\
 
-\tab$\pdv[2]{L_n}{a_z} = \pdv{}{a_j} ( \pdv{L_n}{a_j} ) = \pdv{}{a_j} \bigr( h'(a_j) \sum_k w_{kj} \pdv{L_n}{a_k} \bigr) $\\
-\tab$\phantom{\pdv[2]{L_n}{a_z} } = h''(a_j) \sum_k w_{kj} \pdv{L_n}{a_k}+h'(a_j) \sum_k w_{kj} \frac{\partial^2 L_n}{\partial a_k \partial a_j}$\\
+% \tab$\pdv[2]{L_n}{a_z} = \pdv{}{a_j} ( \pdv{L_n}{a_j} ) = \pdv{}{a_j} \bigr( h'(a_j) \sum_k w_{kj} \pdv{L_n}{a_k} \bigr) $\\
+% \tab$\phantom{\pdv[2]{L_n}{a_z} } = h''(a_j) \sum_k w_{kj} \pdv{L_n}{a_k}+h'(a_j) \sum_k w_{kj} \frac{\partial^2 L_n}{\partial a_k \partial a_j}$\\
 
-Then: $\frac{\partial^2 L_n}{\partial a_k \partial a_j}= \pdv{}{a_k} \cdot \pdv{L_n}{a_j} = \pdv{}{a_k} \bigr(h'(a_j) \sum_{k'} w_{k'j} \pdv{L_n}{a_{k'}} \bigr)$\\
+% Then: $\frac{\partial^2 L_n}{\partial a_k \partial a_j}= \pdv{}{a_k} \cdot \pdv{L_n}{a_j} = \pdv{}{a_k} \bigr(h'(a_j) \sum_{k'} w_{k'j} \pdv{L_n}{a_{k'}} \bigr)$\\
 
-$\phantom{\text{Then: }\frac{\partial^2 L_n}{\partial a_k \partial a_j}}=h'(a_j)\sum_{k'} w_{k'j} \frac{\partial^2 L_n}{\partial a_k' \partial a_k}$
+% $\phantom{\text{Then: }\frac{\partial^2 L_n}{\partial a_k \partial a_j}}=h'(a_j)\sum_{k'} w_{k'j} \frac{\partial^2 L_n}{\partial a_k' \partial a_k}$
 
-\textbf{Question:} \emph{Assume we can neglect off-diagonal elements in the second-derivative terms. What expression do we get? What's the computational complexity compared to computing the exact Hessian matrix?}
+% \textbf{Question:} \emph{Assume we can neglect off-diagonal elements in the second-derivative terms. What expression do we get? What's the computational complexity compared to computing the exact Hessian matrix?}
 
-\tab$\pdv[2]{L_n}{a_j} = h'(a_j)^2 \sum_k w^2_{kj} \pdv[2]{L_n}{a_k} + h''(a_j) \sum_k w_{kj} \pdv{L_n}{a_k}$.\\
+% \tab$\pdv[2]{L_n}{a_j} = h'(a_j)^2 \sum_k w^2_{kj} \pdv[2]{L_n}{a_k} + h''(a_j) \sum_k w_{kj} \pdv{L_n}{a_k}$.\\
 
-\tab The computational complexity for this approx. Hessian is $O(W)$ where $W$ is the total number of weights in the network, $O(W^2)$ for the full Hessian.
+% \tab The computational complexity for this approx. Hessian is $O(W)$ where $W$ is the total number of weights in the network, $O(W^2)$ for the full Hessian.
 
 % \begin{figure}[H]
 %         \includegraphics[width=\columnwidth]{images/bishop5-3.png}
